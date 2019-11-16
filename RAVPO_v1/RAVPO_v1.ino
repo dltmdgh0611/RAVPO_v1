@@ -1,9 +1,19 @@
-﻿#include "RAVPO.h"
-#include <math.h>
+﻿#include <math.h>
+#include <RAVPO.h>
+
+INITS INITMOD;
 
 void setup() {
-	inits
-	RAVPO_init();
+
+	//all init
+	{
+		INITMOD.j1E = true;
+		INITMOD.j2E = true;
+		INITMOD.roE = true;
+	} 
+	
+	
+	INITMOD.RAVPO_init(INITMOD);
 	
 }
 
