@@ -2,6 +2,8 @@
 #include <RAVPO.h>
 
 INITS INITMOD;
+MOVING MOVINGSTATUS;
+KEYINPUT keyinput;
 
 void setup() {
 
@@ -14,9 +16,19 @@ void setup() {
 	
 	
 	INITMOD.RAVPO_init(INITMOD);
-	
 }
 
 void loop() {
   
+}
+
+
+SIGNAL(TIMER1_COMPA_vect)
+{
+	MOVINGSTATUS.RUNNING_STEPMOTOR(MOVING_SELECT_X);
+}
+
+SIGNAL(TIMER3_COMPA_vect)
+{
+	MOVINGSTATUS.RUNNING_STEPMOTOR(MOVING_SELECT_Y);
 }
