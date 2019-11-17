@@ -18,15 +18,13 @@
     <None Include="src\arduino folders read me.txt">
       <Filter>Misc Files</Filter>
     </None>
-    <None Include="RAVPO_v1.ino">
-      <Filter>Source Files</Filter>
-    </None>
+    <None Include="RAVPO_v1.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.RAVPO_v1.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Documents\Arduino\RAVPO_v1\RAVPO.h">
+    <ClInclude Include="RAVPO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
