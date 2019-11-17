@@ -120,6 +120,8 @@
     <ClInclude Include="__vm\.RAVPO_v1.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="RAVPO_init.cpp" />
+    <ClCompile Include="RAVPO_KEYINPUT.cpp" />
     <ClCompile Include="RAVPO_Stepper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

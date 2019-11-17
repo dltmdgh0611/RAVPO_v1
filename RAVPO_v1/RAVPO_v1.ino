@@ -19,7 +19,7 @@ void setup() {
 }
 
 void loop() {
-  
+	keyinput.INPUT_KEY(1,false);
 }
 
 
