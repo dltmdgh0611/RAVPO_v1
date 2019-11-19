@@ -39,6 +39,7 @@ public :
 	bool j1E_start_trigger = false;
 	bool j2E_start_trigger = false;
 	bool roE_start_trigger = false;
+	bool RSF;
 	int distance_x, distance_y;
 	void RUNNING_STEPMOTOR(short MOTOR_ST);
 	void MOVING_XY(int xpos, int ypos);

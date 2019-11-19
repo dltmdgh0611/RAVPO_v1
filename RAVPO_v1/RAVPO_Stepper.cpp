@@ -5,6 +5,7 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 	static bool PWM_toggle_Y = true;
 	static int PWM_count_X = 0;
 	static int PWM_count_Y = 0;
+
 	switch (MOTOR_ST)
 	{
 	case MOVING_SELECT_X : 
@@ -17,6 +18,10 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 					if (X_PorM) cur_x+=PWM_count_X;
 					else cur_x-= PWM_count_X;
 					PWM_count_X = 0;
+					if (RSF) {
+						cur_x = 0;
+						RSF = false;
+					}
 				}
 				digitalWrite(J1_STEP_PIN, 1);
 				PWM_toggle_X = false;
@@ -33,10 +38,15 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 			if (PWM_toggle_Y) {
 				PWM_count_Y++;
 				if (PWM_count_Y >= abs(cur_y - distance_y)) {
+					
 					j2E_start_trigger = false;
 					if (Y_PorM) cur_y += PWM_count_Y;
 					else cur_y -= PWM_count_Y;
 					PWM_count_Y = 0;
+					if (RSF) {
+						cur_y = 0;
+						RSF = false;
+					}
 				}
 				digitalWrite(J2_STEP_PIN, 1);
 				PWM_toggle_Y = false;
@@ -54,8 +64,8 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 
 void MOVING::MOVING_XY(int xpos, int ypos) {
 	JUDGEMENT_DIR(xpos, ypos);
-	j1E_start_trigger = (xpos == 0 ? false : true);
-	j2E_start_trigger = (ypos == 0 ? false : true);
+	j1E_start_trigger = (xpos == cur_x ? false : true);
+	j2E_start_trigger = (ypos == cur_y ? false : true);
 	distance_x = xpos;
 	distance_y = ypos;
 }

@@ -16,6 +16,7 @@ void setup() {
 	
 	
 	INITMOD.RAVPO_init(INITMOD, 200);
+	
 	MOVESTATUS = MOVING();
 	MOVESTATUS.MOVING_XY(0, 0);
 }
