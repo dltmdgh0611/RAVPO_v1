@@ -6,9 +6,12 @@
 #define J1_STEP_PIN         54
 #define J1_DIR_PIN          55
 #define J1_ENABLE_PIN       38
+#define J1_MIN_PIN           3
+
 #define J2_STEP_PIN			60
 #define J2_DIR_PIN			61
 #define J2_ENABLE_PIN		56
+#define J2_MIN_PIN          14
 
 #define MOVING_SELECT_X		1
 #define MOVING_SELECT_Y		2
@@ -21,20 +24,27 @@ public:
 	bool j2E = false; //second joint
 	bool roE = false; //rotate base
 
+	//-----------------------------------//
+	
+
 	void RAVPO_init(INITS initmod,int speed);
 private:
 
 };
 
-struct MOVING
+class MOVING
 {
+public :
+	int cur_x, cur_y;
 	bool j1E_start_trigger = false;
 	bool j2E_start_trigger = false;
 	bool roE_start_trigger = false;
 	int distance_x, distance_y;
 	void RUNNING_STEPMOTOR(short MOTOR_ST);
 	void MOVING_XY(int xpos, int ypos);
+private:
 	void JUDGEMENT_DIR(int xpos, int ypos);
+	bool X_PorM, Y_PorM;
 
 };
 

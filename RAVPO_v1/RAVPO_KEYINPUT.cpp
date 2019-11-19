@@ -2,12 +2,17 @@
 
 void KEYINPUT::INPUT_KEY(MOVING* MOVESTATUS, int delayamount,bool microsecond) {
 	if (Serial.available()) {
-		Serial.println("aval");
+		static int xp, yp;
 		char key = Serial.read();
-		if (key == 'a') MOVESTATUS->MOVING_XY(-200, 0);
-		if (key == 'd') MOVESTATUS->MOVING_XY(200, 0);
-		if (key == 'w') MOVESTATUS->MOVING_XY(0, 200);
-		if (key == 's') MOVESTATUS->MOVING_XY(0, -200);
+		switch (key)
+		{
+		case 'a': xp -= 500; MOVESTATUS->MOVING_XY(xp, 0);  break;
+		case 'd': xp += 500;  MOVESTATUS->MOVING_XY(xp, 0); break;
+		case 'w': yp += 500; MOVESTATUS->MOVING_XY(0, yp);  break;
+		case 's': yp -= 500; MOVESTATUS->MOVING_XY(0, yp);  break;
+		default:
+			break;
+		}
 	}
 	delayMicroseconds((microsecond == true ? 1 : 1000) * delayamount);
 }
