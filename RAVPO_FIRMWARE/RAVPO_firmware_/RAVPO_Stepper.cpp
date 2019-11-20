@@ -1,5 +1,5 @@
 #include "RAVPO.h"
-
+//윈도우 락을 생활화 합시다.
 void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 	static bool PWM_toggle_X = true;
 	static bool PWM_toggle_Y = true;
