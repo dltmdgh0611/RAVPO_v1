@@ -21,7 +21,7 @@ void setup() {
 	MOVESTATUS.MOVING_XY(0, 0);
 }
 
-void loop() {
+void loop() {   
 	keyinput.INPUT_KEY(&MOVESTATUS, 1, false);
 }
 
