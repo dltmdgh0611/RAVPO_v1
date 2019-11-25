@@ -2,7 +2,6 @@
 //true file
 void INITS::RAVPO_init(INITS initmod, int speed) {
 	Serial.begin(115200);
-	Serial.println("s");
 	pinMode(J1_MIN_PIN, OUTPUT);
 	digitalWrite(J1_MIN_PIN, 1);
 	pinMode(J2_MIN_PIN, OUTPUT);

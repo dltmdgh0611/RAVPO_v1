@@ -4,6 +4,7 @@
 MOVING MOVESTATUS;
 INITS INITMOD;
 KEYINPUT keyinput;
+SERIALINPUT SerialInput;
 
 void setup() {
 
@@ -16,13 +17,13 @@ void setup() {
 	
 	
 	INITMOD.RAVPO_init(INITMOD, 200);
-	
+	SerialInput.gridinit();
 	MOVESTATUS = MOVING();
-	MOVESTATUS.MOVING_XY(0, 0);
 }
 
 void loop() {   
-	keyinput.INPUT_KEY(&MOVESTATUS, 1, false);
+	//keyinput.INPUT_KEY(&MOVESTATUS, 1, false);
+	SerialInput.SERIAL_INPUT(&MOVESTATUS);
 }
 
 

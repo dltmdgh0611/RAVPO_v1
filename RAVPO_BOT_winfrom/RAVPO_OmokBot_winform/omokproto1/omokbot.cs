@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
@@ -106,15 +107,15 @@ namespace omokproto1
         }
         private void omokbot_Load(object sender, EventArgs e)
         {
-            beforecap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
-            beforecap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
-            beforecap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
+            //beforecap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
+            //beforecap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
+            //beforecap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
 
-            aftercap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
-            aftercap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
-            aftercap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
+            //aftercap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
+            //aftercap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
+            //aftercap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
 
-            serialPort1.PortName = "COM10";
+            serialPort1.PortName = "COM11";
             serialPort1.BaudRate = 115200;
             serialPort1.Open();
             serialPort1.DataReceived += SerialPort1_DataReceived;
@@ -123,6 +124,7 @@ namespace omokproto1
         private void SerialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             
+            this.Invoke(new Action(() => listView1.Items.Add(serialPort1.ReadLine()))); 
         }
 
         private void difficult_changed(object _, EventArgs __)
@@ -139,7 +141,7 @@ namespace omokproto1
                 Ai_point[3, 0] = 6; //x000x
                 Ai_point[3, 1] = 7; //00x0x
                 Ai_point[3, 2] = 8; //0x0x0
-                Ai_point[4, 0] = 9;//0000x
+                Ai_point[4, 0] = 9; //0000x
                 Ai_point[4, 1] = 10;//0x000
                 explainer_lb.Text = "보통의 난이도로 초등 수준의 난이도 입니다.";
             }
@@ -246,6 +248,13 @@ namespace omokproto1
             sound_Placestone.Play();
             BoardGrid[x, y] = type;
             omokpan.Refresh();
+        }
+
+        private void SerialSend_bt_Click(object sender, EventArgs e)
+        {
+            serialPort1.Write(X_tb.Text);
+            Thread.Sleep(10);
+            serialPort1.Write(Y_tb.Text);
         }
 
         private bool action_Check_Winner()
@@ -554,6 +563,9 @@ namespace omokproto1
                 }
 
                 Ai_lastPlace = best_pos;
+                serialPort1.Write(best_pos.X.ToString());
+                Thread.Sleep(10);
+                serialPort1.Write(best_pos.Y.ToString());
                 action_Place_stone(Ai_stone, best_pos.X, best_pos.Y);
             }
             Game_Turn = User_stone;

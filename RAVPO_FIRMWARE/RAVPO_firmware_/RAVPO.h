@@ -1,5 +1,4 @@
 #include <Arduino.h>
-
 #ifndef RAVPO_H
 #define RAVPO_H
 
@@ -49,6 +48,19 @@ private:
 
 };
 
+class SERIALINPUT
+{
+public:
+	int grid[11][11][2];
+	void SERIAL_INPUT(MOVING* MOVESTATUS);
+	void gridinit();
+	int serial_count;
+	int serialX, serialY;
+private:
+
+};
+
+
 class KEYINPUT
 {
 public:
@@ -57,5 +69,6 @@ public:
 private:
 
 };
+
 
 #endif RAVPO_H
