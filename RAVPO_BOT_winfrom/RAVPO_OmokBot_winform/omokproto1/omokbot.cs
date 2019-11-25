@@ -29,8 +29,14 @@ namespace omokproto1
         Jiwan
     }
 
-    public partial class Form1 : Form
+    public partial class omokbot : Form
     {
+        CvCapture beforecap;
+        IplImage srcb;
+
+        CvCapture aftercap;
+        IplImage srca;
+
         const int BoardWidth = 11; //보드의 각 줄
         const int BoardMargin = 50; //보드 마진
         const int BoardCircleSize = 10; // 격자점 크기
@@ -66,7 +72,7 @@ namespace omokproto1
         Pen wp = new Pen(Color.White, 6);
         Pen bp = new Pen(Color.Black, 6);
         Pen PS = new Pen(Color.Red,6);
-        public Form1()
+        public omokbot()
         {
             InitializeComponent();
             win_lb.Text = "omoking...";
@@ -85,6 +91,7 @@ namespace omokproto1
             g = omokpan.CreateGraphics();
             omokpan.Refresh();
 
+
             //AI 평점 설정
             Ai_point[1, 0] = 1;  //xxOxx, 0xxxx
             Ai_point[2, 0] = 4;  // x00xx
@@ -96,6 +103,26 @@ namespace omokproto1
             Ai_point[3, 2] = 16; //0x0x0
             Ai_point[4, 0] = 73; //0000x
             Ai_point[4, 1] = 72; //0x000
+        }
+        private void omokbot_Load(object sender, EventArgs e)
+        {
+            beforecap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
+            beforecap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
+            beforecap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
+
+            aftercap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
+            aftercap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
+            aftercap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
+
+            serialPort1.PortName = "COM10";
+            serialPort1.BaudRate = 115200;
+            serialPort1.Open();
+            serialPort1.DataReceived += SerialPort1_DataReceived;
+        }
+
+        private void SerialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        {
+            
         }
 
         private void difficult_changed(object _, EventArgs __)
@@ -137,8 +164,6 @@ namespace omokproto1
                 explainer_lb.Text = "대소고에 재학중인 한지완 학생이 AI를 원격으로 조종합니다.";
             }
         }
-
-
 
         private void start_btn_Click(object sender, EventArgs e)
         {

@@ -1,6 +1,6 @@
 ﻿namespace omokproto1
 {
-    partial class Form1
+    partial class omokbot
     {
         /// <summary>
         /// 필수 디자이너 변수입니다.
@@ -39,7 +39,20 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.cmb_first = new System.Windows.Forms.ComboBox();
             this.explainer_lb = new System.Windows.Forms.Label();
+            this.gbx_omokbot = new System.Windows.Forms.GroupBox();
+            this.Gbx_processing = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.pictureBoxIpl1 = new OpenCvSharp.UserInterface.PictureBoxIpl();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.beforecv = new OpenCvSharp.UserInterface.PictureBoxIpl();
+            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.groupBox1.SuspendLayout();
+            this.gbx_omokbot.SuspendLayout();
+            this.Gbx_processing.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxIpl1)).BeginInit();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.beforecv)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -47,7 +60,7 @@
             this.groupBox1.Controls.Add(this.jiwan_rb);
             this.groupBox1.Controls.Add(this.hard_rb);
             this.groupBox1.Controls.Add(this.normal_rb);
-            this.groupBox1.Location = new System.Drawing.Point(821, 254);
+            this.groupBox1.Location = new System.Drawing.Point(810, 225);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(282, 205);
             this.groupBox1.TabIndex = 1;
@@ -95,7 +108,7 @@
             // 
             // start_btn
             // 
-            this.start_btn.Location = new System.Drawing.Point(894, 506);
+            this.start_btn.Location = new System.Drawing.Point(883, 477);
             this.start_btn.Name = "start_btn";
             this.start_btn.Size = new System.Drawing.Size(155, 50);
             this.start_btn.TabIndex = 2;
@@ -106,7 +119,7 @@
             // omokpan
             // 
             this.omokpan.BackColor = System.Drawing.Color.Orange;
-            this.omokpan.Location = new System.Drawing.Point(10, 10);
+            this.omokpan.Location = new System.Drawing.Point(6, 20);
             this.omokpan.Name = "omokpan";
             this.omokpan.Size = new System.Drawing.Size(800, 800);
             this.omokpan.TabIndex = 3;
@@ -117,7 +130,7 @@
             // 
             this.win_lb.BackColor = System.Drawing.Color.Transparent;
             this.win_lb.Font = new System.Drawing.Font("굴림", 15F);
-            this.win_lb.Location = new System.Drawing.Point(821, 155);
+            this.win_lb.Location = new System.Drawing.Point(398, 910);
             this.win_lb.Name = "win_lb";
             this.win_lb.Size = new System.Drawing.Size(282, 20);
             this.win_lb.TabIndex = 4;
@@ -136,7 +149,7 @@
             this.cmb_first.Items.AddRange(new object[] {
             "유저 선수",
             "AI 선수"});
-            this.cmb_first.Location = new System.Drawing.Point(894, 473);
+            this.cmb_first.Location = new System.Drawing.Point(883, 444);
             this.cmb_first.Name = "cmb_first";
             this.cmb_first.Size = new System.Drawing.Size(155, 27);
             this.cmb_first.TabIndex = 5;
@@ -145,30 +158,97 @@
             // explainer_lb
             // 
             this.explainer_lb.AutoSize = true;
-            this.explainer_lb.Location = new System.Drawing.Point(843, 671);
+            this.explainer_lb.Location = new System.Drawing.Point(832, 642);
             this.explainer_lb.Name = "explainer_lb";
             this.explainer_lb.Size = new System.Drawing.Size(38, 12);
             this.explainer_lb.TabIndex = 6;
             this.explainer_lb.Text = "label1";
             this.explainer_lb.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // Form1
+            // gbx_omokbot
+            // 
+            this.gbx_omokbot.Controls.Add(this.start_btn);
+            this.gbx_omokbot.Controls.Add(this.win_lb);
+            this.gbx_omokbot.Controls.Add(this.omokpan);
+            this.gbx_omokbot.Controls.Add(this.groupBox1);
+            this.gbx_omokbot.Controls.Add(this.cmb_first);
+            this.gbx_omokbot.Controls.Add(this.explainer_lb);
+            this.gbx_omokbot.Location = new System.Drawing.Point(10, 10);
+            this.gbx_omokbot.Name = "gbx_omokbot";
+            this.gbx_omokbot.Size = new System.Drawing.Size(1101, 1019);
+            this.gbx_omokbot.TabIndex = 8;
+            this.gbx_omokbot.TabStop = false;
+            this.gbx_omokbot.Text = "OMOKBOT";
+            // 
+            // Gbx_processing
+            // 
+            this.Gbx_processing.Controls.Add(this.groupBox3);
+            this.Gbx_processing.Controls.Add(this.groupBox2);
+            this.Gbx_processing.Location = new System.Drawing.Point(1117, 12);
+            this.Gbx_processing.Name = "Gbx_processing";
+            this.Gbx_processing.Size = new System.Drawing.Size(775, 1017);
+            this.Gbx_processing.TabIndex = 9;
+            this.Gbx_processing.TabStop = false;
+            this.Gbx_processing.Text = "VideoProcessing";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.groupBox3.Controls.Add(this.pictureBoxIpl1);
+            this.groupBox3.Location = new System.Drawing.Point(6, 506);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(763, 480);
+            this.groupBox3.TabIndex = 1;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "processing";
+            // 
+            // pictureBoxIpl1
+            // 
+            this.pictureBoxIpl1.Location = new System.Drawing.Point(6, 20);
+            this.pictureBoxIpl1.Name = "pictureBoxIpl1";
+            this.pictureBoxIpl1.Size = new System.Drawing.Size(751, 454);
+            this.pictureBoxIpl1.TabIndex = 1;
+            this.pictureBoxIpl1.TabStop = false;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.groupBox2.Controls.Add(this.beforecv);
+            this.groupBox2.Location = new System.Drawing.Point(6, 20);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(763, 480);
+            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "원본";
+            // 
+            // beforecv
+            // 
+            this.beforecv.Location = new System.Drawing.Point(6, 20);
+            this.beforecv.Name = "beforecv";
+            this.beforecv.Size = new System.Drawing.Size(751, 454);
+            this.beforecv.TabIndex = 0;
+            this.beforecv.TabStop = false;
+            // 
+            // omokbot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1115, 822);
-            this.Controls.Add(this.explainer_lb);
-            this.Controls.Add(this.cmb_first);
-            this.Controls.Add(this.win_lb);
-            this.Controls.Add(this.omokpan);
-            this.Controls.Add(this.start_btn);
-            this.Controls.Add(this.groupBox1);
-            this.Name = "Form1";
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.Controls.Add(this.Gbx_processing);
+            this.Controls.Add(this.gbx_omokbot);
+            this.Name = "omokbot";
             this.Text = "omok";
+            this.Load += new System.EventHandler(this.omokbot_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.gbx_omokbot.ResumeLayout(false);
+            this.gbx_omokbot.PerformLayout();
+            this.Gbx_processing.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxIpl1)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.beforecv)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -183,6 +263,13 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ComboBox cmb_first;
         private System.Windows.Forms.Label explainer_lb;
+        private System.Windows.Forms.GroupBox gbx_omokbot;
+        private System.Windows.Forms.GroupBox Gbx_processing;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private OpenCvSharp.UserInterface.PictureBoxIpl pictureBoxIpl1;
+        private OpenCvSharp.UserInterface.PictureBoxIpl beforecv;
+        private System.IO.Ports.SerialPort serialPort1;
     }
 }
 
