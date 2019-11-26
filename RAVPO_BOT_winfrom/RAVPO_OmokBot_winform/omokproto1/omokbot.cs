@@ -11,8 +11,13 @@ using System.Windows.Forms;
 using System.Media;
 
 using OpenCvSharp;
-
-
+using OpenCvSharp.CPlusPlus;
+using OpenCvSharp.Blob;
+using OpenCvSharp.Extensions;
+using OpenCvSharp.UserInterface;
+using OpenCvSharp.Utilities;
+using Point = System.Drawing.Point;
+using Action = System.Action;
 
 namespace omokproto1
 {
@@ -107,15 +112,15 @@ namespace omokproto1
         }
         private void omokbot_Load(object sender, EventArgs e)
         {
-            //beforecap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
-            //beforecap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
-            //beforecap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
+            beforecap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
+            beforecap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
+            beforecap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
 
-            //aftercap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
-            //aftercap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
-            //aftercap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
+            aftercap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
+            aftercap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
+            aftercap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
 
-            serialPort1.PortName = "COM11";
+            serialPort1.PortName = "COM9";
             serialPort1.BaudRate = 115200;
             serialPort1.Open();
             serialPort1.DataReceived += SerialPort1_DataReceived;
@@ -163,7 +168,7 @@ namespace omokproto1
             else if (jiwan_rb.Checked)
             {
                 level = Diffcult.Jiwan;
-                explainer_lb.Text = "대소고에 재학중인 한지완 학생이 AI를 원격으로 조종합니다.";
+                explainer_lb.Text = "대소고에 재학중인 한지완 학생이\r\n\r\n AI를 원격으로 조종합니다.";
             }
         }
 
@@ -334,6 +339,11 @@ namespace omokproto1
             return false;
         }
 
+        private void cvtimer_Tick(object sender, EventArgs e)
+        {
+            CV_CP();
+        }
+
         private void Omokpan_Paint(object sender, PaintEventArgs e)
         {
             //가로선과 세로선 긋기
@@ -439,9 +449,20 @@ namespace omokproto1
                 default: break;
             }
         }
+        
+        private void CV_CP()
+        {
+            
+            srca = beforecap.QueryFrame();
+            pictureBoxIpl1.ImageIpl = srca;
+            srcb = beforecap.QueryFrame();
+            beforecv.ImageIpl = srcb;
+        }
+
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
+            
             AIDelay = rnd.Next(500, 5000);
             for (int _ = 0; _ < ((Diffcult.Jiwan == level && jiwancount % 5 == 0) ? 2 : 1); ++_)
             {

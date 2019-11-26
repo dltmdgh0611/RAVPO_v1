@@ -41,6 +41,7 @@
             this.explainer_lb = new System.Windows.Forms.Label();
             this.gbx_omokbot = new System.Windows.Forms.GroupBox();
             this.control = new System.Windows.Forms.GroupBox();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.SerialSend_bt = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.Y_tb = new System.Windows.Forms.TextBox();
@@ -52,7 +53,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.beforecv = new OpenCvSharp.UserInterface.PictureBoxIpl();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.cvtimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.gbx_omokbot.SuspendLayout();
             this.control.SuspendLayout();
@@ -165,10 +166,9 @@
             // 
             // explainer_lb
             // 
-            this.explainer_lb.AutoSize = true;
-            this.explainer_lb.Location = new System.Drawing.Point(832, 642);
+            this.explainer_lb.Location = new System.Drawing.Point(817, 652);
             this.explainer_lb.Name = "explainer_lb";
-            this.explainer_lb.Size = new System.Drawing.Size(38, 12);
+            this.explainer_lb.Size = new System.Drawing.Size(275, 66);
             this.explainer_lb.TabIndex = 6;
             this.explainer_lb.Text = "label1";
             this.explainer_lb.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -203,6 +203,15 @@
             this.control.TabIndex = 8;
             this.control.TabStop = false;
             this.control.Text = "수동 조작";
+            // 
+            // listView1
+            // 
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(394, 16);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(398, 157);
+            this.listView1.TabIndex = 12;
+            this.listView1.UseCompatibleStateImageBehavior = false;
             // 
             // SerialSend_bt
             // 
@@ -295,14 +304,11 @@
             this.beforecv.TabIndex = 0;
             this.beforecv.TabStop = false;
             // 
-            // listView1
+            // cvtimer
             // 
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(394, 16);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(398, 157);
-            this.listView1.TabIndex = 12;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.cvtimer.Enabled = true;
+            this.cvtimer.Interval = 30;
+            this.cvtimer.Tick += new System.EventHandler(this.cvtimer_Tick);
             // 
             // omokbot
             // 
@@ -317,7 +323,6 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.gbx_omokbot.ResumeLayout(false);
-            this.gbx_omokbot.PerformLayout();
             this.control.ResumeLayout(false);
             this.control.PerformLayout();
             this.Gbx_processing.ResumeLayout(false);
@@ -354,6 +359,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox X_tb;
         private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.Timer cvtimer;
     }
 }
 
