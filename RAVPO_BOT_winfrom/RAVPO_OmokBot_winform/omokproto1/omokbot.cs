@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows;
 using System.Media;
 
 using OpenCvSharp;
@@ -18,6 +19,9 @@ using OpenCvSharp.UserInterface;
 using OpenCvSharp.Utilities;
 using Point = System.Drawing.Point;
 using Action = System.Action;
+using System.Numerics;
+using Vector = System.Windows.Vector;
+using Mat = OpenCvSharp.CPlusPlus.Mat;
 
 namespace omokproto1
 {
@@ -37,11 +41,11 @@ namespace omokproto1
 
     public partial class omokbot : Form
     {
-        CvCapture beforecap;
-        IplImage srcb;
+        VideoCapture beforecap;
+        Mat srcb = new Mat();
 
-        CvCapture aftercap;
-        IplImage srca;
+        VideoCapture aftercap;
+        Mat srca = new Mat();
 
         const int BoardWidth = 11; //보드의 각 줄
         const int BoardMargin = 50; //보드 마진
@@ -67,7 +71,8 @@ namespace omokproto1
         BlockType Game_Turn = BlockType.BlackStone;
 
         BlockType Game_Winner = BlockType.Empty;
-        
+        Point c;
+        HierarchyIndex h;
         int fin_x = -10, fin_y = -10, finend_x = -10, finend_y = -10;
         BlockType Ai_stone = BlockType.WhiteStone;
         Point Ai_lastPlace = new Point(-1, -1);
@@ -112,13 +117,13 @@ namespace omokproto1
         }
         private void omokbot_Load(object sender, EventArgs e)
         {
-            beforecap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
-            beforecap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
-            beforecap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
+            beforecap = new VideoCapture(0);
+            beforecap.FrameWidth = 751;
+            beforecap.FrameHeight = 454;
 
-            aftercap = CvCapture.FromCamera(CaptureDevice.DShow, 0);
-            aftercap.SetCaptureProperty(CaptureProperty.FrameWidth, 751);
-            aftercap.SetCaptureProperty(CaptureProperty.FrameHeight, 454);
+            aftercap = new VideoCapture(0);
+            aftercap.FrameWidth = 751;
+            aftercap.FrameHeight = 454;
 
             serialPort1.PortName = "COM9";
             serialPort1.BaudRate = 115200;
@@ -449,14 +454,49 @@ namespace omokproto1
                 default: break;
             }
         }
-        
+
+        void setLabel(Mat image, string str, InputArray contour)
+        {
+            FontFace fontface = FontFace.HersheyComplex;
+            double scale = 0.5;
+            int thickness = 1;
+            int baseline = 0;
+
+            OpenCvSharp.CPlusPlus.Size text = Cv2.GetTextSize(str, fontface, scale, thickness, out baseline);
+            OpenCvSharp.CPlusPlus.Rect r = Cv2.BoundingRect(contour);
+            OpenCvSharp.CPlusPlus.Point pt = new OpenCvSharp.CPlusPlus.Point(0,0);
+            pt = new OpenCvSharp.CPlusPlus.Point(r.X + ((r.Width - text.Width) / 2),
+                                                 r.Y + ((r.Height + text.Height) / 2));
+            Cv2.Rectangle(image, pt + new OpenCvSharp.CPlusPlus.Point(0, baseline), pt + new OpenCvSharp.CPlusPlus.Point(text.Width, -text.Height), Scalar.GreenYellow, 8);
+            Cv2.PutText(image, str, pt, fontface, scale, Scalar.Black, thickness, LineType.Link8);
+        }
+
+
         private void CV_CP()
         {
+            OpenCvSharp.CPlusPlus.Point[][] contours;
+            OpenCvSharp.CPlusPlus.Point tt;
+            OpenCvSharp.CPlusPlus.HierarchyIndex[] hierarchy = new OpenCvSharp.CPlusPlus.HierarchyIndex[1] { new OpenCvSharp.CPlusPlus.HierarchyIndex() };
+            OpenCvSharp.CPlusPlus.Point[][] approx = new OpenCvSharp.CPlusPlus.Point[1][] { { new OpenCvSharp.CPlusPlus.Point } };
+            beforecap.Read(srcb);
             
-            srca = beforecap.QueryFrame();
-            pictureBoxIpl1.ImageIpl = srca;
-            srcb = beforecap.QueryFrame();
-            beforecv.ImageIpl = srcb;
+
+            aftercap.Read(srca);
+            Cv2.CvtColor(srca, srca, ColorConversion.BgrToGray);
+            Cv2.Canny(srca, srca, 150, 200);
+            Cv2.FindContours(srca, out contours, out hierarchy, ContourRetrieval.List, ContourChain.ApproxSimple);
+
+            for(int i=0; i < contours.Length; i++)
+            {
+                Cv2.ApproxPolyDP(new Mat(contours[i]), approx, Cv2.ArcLength(new Mat(contours[i]), true)*0.02, true);
+                if(Cv2.ContourArea(new Mat(approx)) > 100)
+                {
+                    int size = approx.Length;
+                }
+            }
+            
+
+
         }
 
 

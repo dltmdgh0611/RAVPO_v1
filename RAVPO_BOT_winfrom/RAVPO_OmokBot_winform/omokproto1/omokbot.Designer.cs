@@ -49,7 +49,7 @@
             this.X_tb = new System.Windows.Forms.TextBox();
             this.Gbx_processing = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.pictureBoxIpl1 = new OpenCvSharp.UserInterface.PictureBoxIpl();
+            this.aftercv = new OpenCvSharp.UserInterface.PictureBoxIpl();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.beforecv = new OpenCvSharp.UserInterface.PictureBoxIpl();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
@@ -59,7 +59,7 @@
             this.control.SuspendLayout();
             this.Gbx_processing.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxIpl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.aftercv)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.beforecv)).BeginInit();
             this.SuspendLayout();
@@ -269,7 +269,7 @@
             // groupBox3
             // 
             this.groupBox3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.groupBox3.Controls.Add(this.pictureBoxIpl1);
+            this.groupBox3.Controls.Add(this.aftercv);
             this.groupBox3.Location = new System.Drawing.Point(6, 506);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(763, 480);
@@ -277,13 +277,13 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "processing";
             // 
-            // pictureBoxIpl1
+            // aftercv
             // 
-            this.pictureBoxIpl1.Location = new System.Drawing.Point(6, 20);
-            this.pictureBoxIpl1.Name = "pictureBoxIpl1";
-            this.pictureBoxIpl1.Size = new System.Drawing.Size(751, 454);
-            this.pictureBoxIpl1.TabIndex = 1;
-            this.pictureBoxIpl1.TabStop = false;
+            this.aftercv.Location = new System.Drawing.Point(6, 20);
+            this.aftercv.Name = "aftercv";
+            this.aftercv.Size = new System.Drawing.Size(751, 454);
+            this.aftercv.TabIndex = 1;
+            this.aftercv.TabStop = false;
             // 
             // groupBox2
             // 
@@ -327,7 +327,7 @@
             this.control.PerformLayout();
             this.Gbx_processing.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxIpl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.aftercv)).EndInit();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.beforecv)).EndInit();
             this.ResumeLayout(false);
@@ -349,7 +349,7 @@
         private System.Windows.Forms.GroupBox Gbx_processing;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox2;
-        private OpenCvSharp.UserInterface.PictureBoxIpl pictureBoxIpl1;
+        private OpenCvSharp.UserInterface.PictureBoxIpl aftercv;
         private OpenCvSharp.UserInterface.PictureBoxIpl beforecv;
         private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.GroupBox control;
