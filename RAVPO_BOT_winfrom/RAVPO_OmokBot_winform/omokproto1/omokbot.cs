@@ -440,8 +440,8 @@ namespace omokproto1
         {
             StringBuilder stringBuilder = new StringBuilder("성능 : ");
 
-            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/pan6.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
-            Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/pan6.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
+            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/pan5.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
+            Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/pan5.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
             Image<Gray, Byte> grayscaleImage = sourceImage.Convert<Gray, Byte>().PyrDown().PyrUp();
 
             this.originalImageBox.Image = oriimage;
@@ -558,7 +558,7 @@ namespace omokproto1
                     for (int i = 0; i < vtx.Length; ++i) pts[i] = new Point((int)vtx[i].X, (int)vtx[i].Y);
 
                     List<FloatInt> fv = new List<FloatInt>();
-
+                    Image<Bgr, Byte>[,] grids = new Image<Bgr, Byte>[11, 11];
                     for (int i = 0; i < 4; ++i) fv.Add(new FloatInt { f = vtx[i].X, i = i });
                     fv.Sort();
 
@@ -600,12 +600,13 @@ namespace omokproto1
                         {
                             PointF[] abstractPoint = new PointF[4]
                             {
-                                new PointF(x / 11f, y / 11f),
-                                new PointF((x + 1) / 11f, y / 11f),
-                                new PointF((x + 1)/ 11f, (y + 1) / 11f),
-                                new PointF(x / 11f, (y + 1) / 11f)
+                                new PointF((x - 0.5f) / 10, (y - 0.5f) / 10),
+                                new PointF((x + 0.5f) / 10, (y - 0.5f) / 10),
+                                new PointF((x + 0.5f) / 10, (y + 0.5f) / 10),
+                                new PointF((x - 0.5f) / 10, (y + 0.5f) / 10)
                             };
-
+                            Image<Bgr, byte> image = grids[x,y] = sourceImage.GetSubRect(new Rectangle(new Point((int)abstractPoint[0].X,(int)abstractPoint[0].Y), new System.Drawing.Size((int)width/10,(int)width/10)));
+                            //originalImageBox.Image = grids[x, y];
                             Point[] drawpts = new Point[4];
                             for (int i = 0; i < 4; ++i)
                             {
