@@ -11,12 +11,12 @@ using System.Windows.Forms;
 using System.Windows;
 using System.Media;
 
+using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
+
 using OpenCvSharp;
 using OpenCvSharp.CPlusPlus;
-using OpenCvSharp.Blob;
-using OpenCvSharp.Extensions;
-using OpenCvSharp.UserInterface;
-using OpenCvSharp.Utilities;
 using Point = System.Drawing.Point;
 using Action = System.Action;
 using System.Numerics;
@@ -116,19 +116,13 @@ namespace omokproto1
             Ai_point[4, 1] = 72; //0x000
         }
         private void omokbot_Load(object sender, EventArgs e)
-        {
-            beforecap = new VideoCapture(0);
-            beforecap.FrameWidth = 751;
-            beforecap.FrameHeight = 454;
-
-            aftercap = new VideoCapture(0);
-            aftercap.FrameWidth = 751;
-            aftercap.FrameHeight = 454;
+        { 
 
             serialPort1.PortName = "COM9";
             serialPort1.BaudRate = 115200;
-            serialPort1.Open();
+            //serialPort1.Open();
             serialPort1.DataReceived += SerialPort1_DataReceived;
+            DetectShape();
         }
 
         private void SerialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
@@ -346,7 +340,7 @@ namespace omokproto1
 
         private void cvtimer_Tick(object sender, EventArgs e)
         {
-            CV_CP();
+            //CV_CP();
         }
 
         private void Omokpan_Paint(object sender, PaintEventArgs e)
@@ -455,51 +449,182 @@ namespace omokproto1
             }
         }
 
-        void setLabel(Mat image, string str, InputArray contour)
+        public void DetectShape()
         {
-            FontFace fontface = FontFace.HersheyComplex;
-            double scale = 0.5;
-            int thickness = 1;
-            int baseline = 0;
 
-            OpenCvSharp.CPlusPlus.Size text = Cv2.GetTextSize(str, fontface, scale, thickness, out baseline);
-            OpenCvSharp.CPlusPlus.Rect r = Cv2.BoundingRect(contour);
-            OpenCvSharp.CPlusPlus.Point pt = new OpenCvSharp.CPlusPlus.Point(0,0);
-            pt = new OpenCvSharp.CPlusPlus.Point(r.X + ((r.Width - text.Width) / 2),
-                                                 r.Y + ((r.Height + text.Height) / 2));
-            Cv2.Rectangle(image, pt + new OpenCvSharp.CPlusPlus.Point(0, baseline), pt + new OpenCvSharp.CPlusPlus.Point(text.Width, -text.Height), Scalar.GreenYellow, 8);
-            Cv2.PutText(image, str, pt, fontface, scale, Scalar.Black, thickness, LineType.Link8);
-        }
+            StringBuilder stringBuilder = new StringBuilder("성능 : ");
+
+            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/pan6.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
+            Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/pan6.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
+            Image<Gray, Byte> grayscaleImage = sourceImage.Convert<Gray, Byte>().PyrDown().PyrUp();
+
+            this.originalImageBox.Image = oriimage;
+            #region 원을 검출한다.
+
+            double cannyThreshold = 180.0;
+                double circleAccumulatorThreshold = 120;
+
+                CircleF[][] circleArray = grayscaleImage.HoughCircles
+                (
+                    new Gray(cannyThreshold),
+                    new Gray(circleAccumulatorThreshold),
+                    2.0,  // 원 중심 검출에 사용되는 누산기 해상도
+                    20.0, // 최소 거리
+                    5,    // 최소 반경
+                    0     // 최대 반경
+                );
+
+                #endregion
+                ;
+
+                #region 선을 검출한다.
+
+                double cannyThresholdLinking = 120.0;
+
+                Image<Gray, Byte> cannyEdges = grayscaleImage.Canny(cannyThreshold, cannyThresholdLinking);
+
+                LineSegment2D[][] lineArray = cannyEdges.HoughLinesBinary
+                (
+                    1,              // 거리 해상도 (픽셀 관련 단위)
+                    Math.PI / 45.0, // 라디안으로 측정되는 각도 해상도
+                    20,             // 한계점
+                    30,             // 최소 선 너비
+                    10              // 선간 간격
+                );
+
+                #endregion
 
 
-        private void CV_CP()
-        {
-            OpenCvSharp.CPlusPlus.Point[][] contours;
-            OpenCvSharp.CPlusPlus.Point tt;
-            OpenCvSharp.CPlusPlus.HierarchyIndex[] hierarchy = new OpenCvSharp.CPlusPlus.HierarchyIndex[1] { new OpenCvSharp.CPlusPlus.HierarchyIndex() };
-            OpenCvSharp.CPlusPlus.Point[][] approx = new OpenCvSharp.CPlusPlus.Point[1][] { { new OpenCvSharp.CPlusPlus.Point } };
-            beforecap.Read(srcb);
-            
+                #region 삼각형과 사각형을 검출한다.
 
-            aftercap.Read(srca);
-            Cv2.CvtColor(srca, srca, ColorConversion.BgrToGray);
-            Cv2.Canny(srca, srca, 150, 200);
-            Cv2.FindContours(srca, out contours, out hierarchy, ContourRetrieval.List, ContourChain.ApproxSimple);
+                List<Triangle2DF> triangleList = new List<Triangle2DF>();
 
-            for(int i=0; i < contours.Length; i++)
-            {
-                Cv2.ApproxPolyDP(new Mat(contours[i]), approx, Cv2.ArcLength(new Mat(contours[i]), true)*0.02, true);
-                if(Cv2.ContourArea(new Mat(approx)) > 100)
+                List<MCvBox2D> rectangleList = new List<MCvBox2D>();
+
+                using (MemStorage storage = new MemStorage())
                 {
-                    int size = approx.Length;
+                    for (Contour<Point> pointContour = cannyEdges.FindContours(CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE, RETR_TYPE.CV_RETR_LIST, storage); pointContour != null; pointContour = pointContour.HNext)
+                    {
+                        Contour<Point> currentContour = pointContour.ApproxPoly(pointContour.Perimeter * 0.05, storage);
+
+                        if (currentContour.Area > 250)
+                        {
+                            if (currentContour.Total == 3) // 삼각형인 경우
+                            {
+                                Point[] pointArray = currentContour.ToArray();
+
+                                triangleList.Add(new Triangle2DF(pointArray[0], pointArray[1], pointArray[2]));
+                            }
+                            else if (currentContour.Total == 4) // 사각형인 경우
+                            {
+                                #region 윤곽의 모든 각도가 [80, 100]도 이내인지 결정한다.
+
+                                bool isRectangle = true;
+
+                                Point[] pointArray = currentContour.ToArray();
+
+                                LineSegment2D[] edgeArray = PointCollection.PolyLine(pointArray, true);
+
+                                for (int i = 0; i < edgeArray.Length; i++)
+                                {
+                                    double angle = Math.Abs(edgeArray[(i + 1) % edgeArray.Length].GetExteriorAngleDegree(edgeArray[i]));
+
+                                    if (angle < 80 || angle > 100)
+                                    {
+                                        isRectangle = false;
+
+                                        break;
+                                    }
+                                }
+
+                                #endregion
+
+                                if (isRectangle)
+                                {
+                                    rectangleList.Add(currentContour.GetMinAreaRect());
+                                }
+                            }
+                        }
+                    }
                 }
-            }
+
+                #endregion
+
+                Text = stringBuilder.ToString();
+                
+                
+
+                #region 삼각형/사각형을 그린다.
+
+                Image<Bgr, Byte> triangleRectangleImage = sourceImage.CopyBlank();
+
+                foreach (Triangle2DF triangle in triangleList)
+                {
+                    triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
+                }
+                int count = 0;
             
+                foreach (MCvBox2D rectangle in rectangleList)
+                 {
+                    PointF[] vtx = rectangle.GetVertices();
+                    Point[] pts = new Point[vtx.Length];
+                    for (int i = 0; i < vtx.Length; ++i)
+                        pts[i] = new Point((int)vtx[i].X, (int)vtx[i].Y);
 
+                    sourceImage.DrawPolyline(pts, true, new Bgr(Color.Orange), 1);
+                    MCvBox2D smallrect = new MCvBox2D();
+                    PointF smallrectpoint = new PointF();
+                    smallrect.size.Width = rectangle.size.Width / 10;
+                    smallrect.size.Height = rectangle.size.Height / 10;
 
+                    smallrectpoint.X = (rectangle.center.X - rectangle.size.Width / 2) - rectangle.size.Width / 10;
+                    smallrectpoint.Y = rectangle.center.Y - rectangle.size.Height / 2;
+                    
+                    if (count < 1)
+                    {
+                        for (int i = 0; i < 11; i++)
+                        {
+                            for (int j = 0; j < 11; j++)
+                            {
+                                smallrectpoint.X += rectangle.size.Width / 10;
+                                smallrect.center = smallrectpoint;
+                                sourceImage.Draw(smallrect, new Bgr(Color.Black), 1);
+
+                            }
+                            smallrectpoint.X -= rectangle.size.Width * 11 / 10;
+                            smallrectpoint.Y += rectangle.size.Height / 10;
+                        }
+                    }
+                    //sourceImage.Draw(rectangle, new Bgr(Color.Orange), 1);
+                    count++;
+
+                }
+
+            this.afterimagebox.Image = sourceImage;
+
+            #endregion
+            #region 원을 그린다.
+
+            Image<Bgr, Byte> circleImage = sourceImage.CopyBlank();
+
+                foreach (CircleF circle in circleArray[0])
+                {
+                    circleImage.Draw(circle, new Bgr(Color.Brown), 2);
+                }
+
+                #endregion
+            #region 선을 그린다.
+
+                Image<Bgr, Byte> lineImage = sourceImage.CopyBlank();
+
+                foreach (LineSegment2D line in lineArray[0])
+                {
+                    lineImage.Draw(line, new Bgr(Color.Green), 2);
+                }
+
+                #endregion
+            
         }
-
-
         private void Timer1_Tick(object sender, EventArgs e)
         {
             

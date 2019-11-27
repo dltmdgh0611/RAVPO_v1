@@ -49,19 +49,19 @@
             this.X_tb = new System.Windows.Forms.TextBox();
             this.Gbx_processing = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.aftercv = new OpenCvSharp.UserInterface.PictureBoxIpl();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.beforecv = new OpenCvSharp.UserInterface.PictureBoxIpl();
+            this.originalImageBox = new Emgu.CV.UI.ImageBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.cvtimer = new System.Windows.Forms.Timer(this.components);
+            this.afterimagebox = new Emgu.CV.UI.ImageBox();
             this.groupBox1.SuspendLayout();
             this.gbx_omokbot.SuspendLayout();
             this.control.SuspendLayout();
             this.Gbx_processing.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.aftercv)).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.beforecv)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.originalImageBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.afterimagebox)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -269,7 +269,7 @@
             // groupBox3
             // 
             this.groupBox3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.groupBox3.Controls.Add(this.aftercv);
+            this.groupBox3.Controls.Add(this.afterimagebox);
             this.groupBox3.Location = new System.Drawing.Point(6, 506);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(763, 480);
@@ -277,18 +277,10 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "processing";
             // 
-            // aftercv
-            // 
-            this.aftercv.Location = new System.Drawing.Point(6, 20);
-            this.aftercv.Name = "aftercv";
-            this.aftercv.Size = new System.Drawing.Size(751, 454);
-            this.aftercv.TabIndex = 1;
-            this.aftercv.TabStop = false;
-            // 
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.groupBox2.Controls.Add(this.beforecv);
+            this.groupBox2.Controls.Add(this.originalImageBox);
             this.groupBox2.Location = new System.Drawing.Point(6, 20);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(763, 480);
@@ -296,19 +288,35 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "원본";
             // 
-            // beforecv
+            // originalImageBox
             // 
-            this.beforecv.Location = new System.Drawing.Point(6, 20);
-            this.beforecv.Name = "beforecv";
-            this.beforecv.Size = new System.Drawing.Size(751, 454);
-            this.beforecv.TabIndex = 0;
-            this.beforecv.TabStop = false;
+            this.originalImageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.originalImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.originalImageBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.originalImageBox.Location = new System.Drawing.Point(3, 17);
+            this.originalImageBox.Margin = new System.Windows.Forms.Padding(0);
+            this.originalImageBox.Name = "originalImageBox";
+            this.originalImageBox.Size = new System.Drawing.Size(757, 460);
+            this.originalImageBox.TabIndex = 4;
+            this.originalImageBox.TabStop = false;
             // 
             // cvtimer
             // 
             this.cvtimer.Enabled = true;
             this.cvtimer.Interval = 30;
             this.cvtimer.Tick += new System.EventHandler(this.cvtimer_Tick);
+            // 
+            // afterimagebox
+            // 
+            this.afterimagebox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.afterimagebox.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.afterimagebox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.afterimagebox.Location = new System.Drawing.Point(3, 17);
+            this.afterimagebox.Margin = new System.Windows.Forms.Padding(0);
+            this.afterimagebox.Name = "afterimagebox";
+            this.afterimagebox.Size = new System.Drawing.Size(757, 460);
+            this.afterimagebox.TabIndex = 5;
+            this.afterimagebox.TabStop = false;
             // 
             // omokbot
             // 
@@ -327,9 +335,9 @@
             this.control.PerformLayout();
             this.Gbx_processing.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.aftercv)).EndInit();
             this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.beforecv)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.originalImageBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.afterimagebox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -349,8 +357,6 @@
         private System.Windows.Forms.GroupBox Gbx_processing;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox2;
-        private OpenCvSharp.UserInterface.PictureBoxIpl aftercv;
-        private OpenCvSharp.UserInterface.PictureBoxIpl beforecv;
         private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.GroupBox control;
         private System.Windows.Forms.Button SerialSend_bt;
@@ -360,6 +366,8 @@
         private System.Windows.Forms.TextBox X_tb;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Timer cvtimer;
+        private Emgu.CV.UI.ImageBox originalImageBox;
+        private Emgu.CV.UI.ImageBox afterimagebox;
     }
 }
 
