@@ -1,27 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows;
-using System.Media;
-
-using Emgu.CV;
+﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
-
-using OpenCvSharp;
 using OpenCvSharp.CPlusPlus;
-using Point = System.Drawing.Point;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Media;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 using Action = System.Action;
-using System.Numerics;
-using Vector = System.Windows.Vector;
 using Mat = OpenCvSharp.CPlusPlus.Mat;
+using Point = System.Drawing.Point;
 
 namespace omokproto1
 {
@@ -39,50 +29,52 @@ namespace omokproto1
         Jiwan
     }
 
+
     public partial class omokbot : Form
     {
-        VideoCapture beforecap;
-        Mat srcb = new Mat();
+        private VideoCapture beforecap;
+        private Mat srcb = new Mat();
 
-        VideoCapture aftercap;
-        Mat srca = new Mat();
+        private VideoCapture aftercap;
+        private Mat srca = new Mat();
 
-        const int BoardWidth = 11; //보드의 각 줄
-        const int BoardMargin = 50; //보드 마진
-        const int BoardCircleSize = 10; // 격자점 크기
-        const int BoardStoneSize = 42;
-        Random rnd = new Random();
-        readonly int[,] BoardDirection = new int[4, 2] { { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 } };
-        int[,] Ai_point = new int[5, 4];
+        private const int BoardWidth = 11; //보드의 각 줄
+        private const int BoardMargin = 50; //보드 마진
+        private const int BoardCircleSize = 10; // 격자점 크기
+        private const int BoardStoneSize = 42;
+        private Random rnd = new Random();
+        private readonly int[,] BoardDirection = new int[4, 2] { { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 } };
+        private int[,] Ai_point = new int[5, 4];
 
-        int jiwancount;
-        int AIDelay = 2000;
-        Rectangle BoardSize;
-        BlockType[,] BoardGrid = new BlockType[BoardWidth, BoardWidth];
-        Diffcult level;
-        Graphics g;
-         
-        Image sprite_Blackstone;
-        Image sprite_Whitestone;
+        private int jiwancount;
+        private int AIDelay = 2000;
+        private Rectangle BoardSize;
+        private BlockType[,] BoardGrid = new BlockType[BoardWidth, BoardWidth];
+        private Diffcult level;
+        private Graphics g;
 
-        SoundPlayer sound_Placestone = new SoundPlayer(@"C:\Users\user\source\repos\RAVPO\RAVPO_BOT_winfrom\RAVPO_OmokBot_winform\omokproto1\Resources\dols.wav");
-        int fin_w;
-        bool Game_Run = false;
-        BlockType Game_Turn = BlockType.BlackStone;
+        private Image sprite_Blackstone;
+        private Image sprite_Whitestone;
 
-        BlockType Game_Winner = BlockType.Empty;
-        Point c;
-        HierarchyIndex h;
-        int fin_x = -10, fin_y = -10, finend_x = -10, finend_y = -10;
-        BlockType Ai_stone = BlockType.WhiteStone;
-        Point Ai_lastPlace = new Point(-1, -1);
-        BlockType User_stone = BlockType.BlackStone;
-        Point User_lastPlace = new Point(-1, -1);
+        private SoundPlayer sound_Placestone = new SoundPlayer(@"C:\Users\user\source\repos\RAVPO\RAVPO_BOT_winfrom\RAVPO_OmokBot_winform\omokproto1\Resources\dols.wav");
+        private int fin_w;
+        private bool Game_Run = false;
+        private BlockType Game_Turn = BlockType.BlackStone;
 
-        Font Game_font = new Font("Gulim", 10, System.Drawing.FontStyle.Bold);
-        Pen wp = new Pen(Color.White, 6);
-        Pen bp = new Pen(Color.Black, 6);
-        Pen PS = new Pen(Color.Red,6);
+        private BlockType Game_Winner = BlockType.Empty;
+        private Point c;
+        private HierarchyIndex h;
+        private int fin_x = -10, fin_y = -10, finend_x = -10, finend_y = -10;
+        private BlockType Ai_stone = BlockType.WhiteStone;
+        private Point Ai_lastPlace = new Point(-1, -1);
+        private BlockType User_stone = BlockType.BlackStone;
+        private Point User_lastPlace = new Point(-1, -1);
+
+        private Font Game_font = new Font("Gulim", 10, System.Drawing.FontStyle.Bold);
+        private Pen wp = new Pen(Color.White, 6);
+        private Pen bp = new Pen(Color.Black, 6);
+        private Pen PS = new Pen(Color.Red, 6);
+
         public omokbot()
         {
             InitializeComponent();
@@ -102,7 +94,6 @@ namespace omokproto1
             g = omokpan.CreateGraphics();
             omokpan.Refresh();
 
-
             //AI 평점 설정
             Ai_point[1, 0] = 1;  //xxOxx, 0xxxx
             Ai_point[2, 0] = 4;  // x00xx
@@ -115,9 +106,9 @@ namespace omokproto1
             Ai_point[4, 0] = 73; //0000x
             Ai_point[4, 1] = 72; //0x000
         }
-        private void omokbot_Load(object sender, EventArgs e)
-        { 
 
+        private void omokbot_Load(object sender, EventArgs e)
+        {
             serialPort1.PortName = "COM9";
             serialPort1.BaudRate = 115200;
             //serialPort1.Open();
@@ -127,13 +118,11 @@ namespace omokproto1
 
         private void SerialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            
-            this.Invoke(new Action(() => listView1.Items.Add(serialPort1.ReadLine()))); 
+            this.Invoke(new Action(() => listView1.Items.Add(serialPort1.ReadLine())));
         }
 
         private void difficult_changed(object _, EventArgs __)
         {
-            
             if (normal_rb.Checked)
             {
                 level = Diffcult.Normal;
@@ -209,7 +198,6 @@ namespace omokproto1
                     action_Place_stone(Ai_stone, BoardWidth / 2, BoardWidth / 2);
                     Game_Turn = User_stone;
                 }
-
             }
         }
 
@@ -263,7 +251,6 @@ namespace omokproto1
 
         private bool action_Check_Winner()
         {
-
             BlockType winner = BlockType.Empty;
             for (int x = 0; x < BoardWidth && winner == BlockType.Empty; ++x)
             {
@@ -302,7 +289,6 @@ namespace omokproto1
 
                                 if (owner != BlockType.Empty)
                                 {
-
                                     winner = owner;
                                     Game_Winner = winner;
                                     fin_x = x;
@@ -312,8 +298,6 @@ namespace omokproto1
                                     fin_w = w;
                                     break;
                                 }
-
-
                             }
                         }
                     }
@@ -399,6 +383,7 @@ namespace omokproto1
                                 BoardStoneSize
                             );
                             break;
+
                         case BlockType.WhiteStone:
                             g.DrawImage(sprite_Whitestone,
                                 BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardStoneSize / 2,
@@ -412,7 +397,6 @@ namespace omokproto1
                     {
                         g.DrawString("AI", Game_font, Ai_stone == BlockType.WhiteStone ? Brushes.Black : Brushes.White, BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardStoneSize / 2, BoardSize.Y + BoardSize.Height * y / (BoardWidth - 1) - BoardStoneSize / 2);
                     }
-
                 }
             }
 
@@ -420,38 +404,40 @@ namespace omokproto1
             else if (Game_Winner == BlockType.BlackStone) PS = wp;
             switch (fin_w)
             {
-               
                 case 0:
                     g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
                                 BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
                                 BoardSize.X + BoardSize.Width * (finend_x - 1) / (BoardWidth - 1),
                                 BoardSize.Y + BoardSize.Width * (finend_y) / (BoardWidth - 1));
                     break;
+
                 case 1:
                     g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
                              BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
                              BoardSize.X + BoardSize.Width * (finend_x - 1) / (BoardWidth - 1),
                              BoardSize.Y + BoardSize.Width * (finend_y + 1) / (BoardWidth - 1));
                     break;
+
                 case 2:
                     g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
                                 BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
                                 BoardSize.X + BoardSize.Width * (finend_x) / (BoardWidth - 1),
                                 BoardSize.Y + BoardSize.Width * (finend_y + 1) / (BoardWidth - 1));
                     break;
+
                 case 3:
                     g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
                                 BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
                                 BoardSize.X + BoardSize.Width * (finend_x + 1) / (BoardWidth - 1),
                                 BoardSize.Y + BoardSize.Width * (finend_y + 1) / (BoardWidth - 1));
                     break;
+
                 default: break;
             }
         }
 
         public void DetectShape()
         {
-
             StringBuilder stringBuilder = new StringBuilder("성능 : ");
 
             Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/pan6.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
@@ -459,175 +445,246 @@ namespace omokproto1
             Image<Gray, Byte> grayscaleImage = sourceImage.Convert<Gray, Byte>().PyrDown().PyrUp();
 
             this.originalImageBox.Image = oriimage;
+
             #region 원을 검출한다.
 
             double cannyThreshold = 180.0;
-                double circleAccumulatorThreshold = 120;
+            double circleAccumulatorThreshold = 120;
 
-                CircleF[][] circleArray = grayscaleImage.HoughCircles
-                (
-                    new Gray(cannyThreshold),
-                    new Gray(circleAccumulatorThreshold),
-                    2.0,  // 원 중심 검출에 사용되는 누산기 해상도
-                    20.0, // 최소 거리
-                    5,    // 최소 반경
-                    0     // 최대 반경
-                );
+            CircleF[][] circleArray = grayscaleImage.HoughCircles
+            (
+                new Gray(cannyThreshold),
+                new Gray(circleAccumulatorThreshold),
+                2.0,  // 원 중심 검출에 사용되는 누산기 해상도
+                20.0, // 최소 거리
+                5,    // 최소 반경
+                0     // 최대 반경
+            );
 
-                #endregion
-                ;
+            #endregion 원을 검출한다.
 
-                #region 선을 검출한다.
+            ;
 
-                double cannyThresholdLinking = 120.0;
+            #region 선을 검출한다.
 
-                Image<Gray, Byte> cannyEdges = grayscaleImage.Canny(cannyThreshold, cannyThresholdLinking);
+            double cannyThresholdLinking = 120.0;
 
-                LineSegment2D[][] lineArray = cannyEdges.HoughLinesBinary
-                (
-                    1,              // 거리 해상도 (픽셀 관련 단위)
-                    Math.PI / 45.0, // 라디안으로 측정되는 각도 해상도
-                    20,             // 한계점
-                    30,             // 최소 선 너비
-                    10              // 선간 간격
-                );
+            Image<Gray, Byte> cannyEdges = grayscaleImage.Canny(cannyThreshold, cannyThresholdLinking);
 
-                #endregion
+            LineSegment2D[][] lineArray = cannyEdges.HoughLinesBinary
+            (
+                1,              // 거리 해상도 (픽셀 관련 단위)
+                Math.PI / 45.0, // 라디안으로 측정되는 각도 해상도
+                20,             // 한계점
+                30,             // 최소 선 너비
+                10              // 선간 간격
+            );
 
+            #endregion 선을 검출한다.
 
-                #region 삼각형과 사각형을 검출한다.
+            #region 삼각형과 사각형을 검출한다.
 
-                List<Triangle2DF> triangleList = new List<Triangle2DF>();
+            List<Triangle2DF> triangleList = new List<Triangle2DF>();
 
-                List<MCvBox2D> rectangleList = new List<MCvBox2D>();
+            List<MCvBox2D> rectangleList = new List<MCvBox2D>();
 
-                using (MemStorage storage = new MemStorage())
+            using (MemStorage storage = new MemStorage())
+            {
+                for (Contour<Point> pointContour = cannyEdges.FindContours(CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE, RETR_TYPE.CV_RETR_LIST, storage); pointContour != null; pointContour = pointContour.HNext)
                 {
-                    for (Contour<Point> pointContour = cannyEdges.FindContours(CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE, RETR_TYPE.CV_RETR_LIST, storage); pointContour != null; pointContour = pointContour.HNext)
+                    Contour<Point> currentContour = pointContour.ApproxPoly(pointContour.Perimeter * 0.05, storage);
+
+                    if (currentContour.Area > 250)
                     {
-                        Contour<Point> currentContour = pointContour.ApproxPoly(pointContour.Perimeter * 0.05, storage);
-
-                        if (currentContour.Area > 250)
+                        if (currentContour.Total == 3) // 삼각형인 경우
                         {
-                            if (currentContour.Total == 3) // 삼각형인 경우
-                            {
-                                Point[] pointArray = currentContour.ToArray();
+                            Point[] pointArray = currentContour.ToArray();
 
-                                triangleList.Add(new Triangle2DF(pointArray[0], pointArray[1], pointArray[2]));
+                            triangleList.Add(new Triangle2DF(pointArray[0], pointArray[1], pointArray[2]));
+                        }
+                        else if (currentContour.Total == 4) // 사각형인 경우
+                        {
+                            #region 윤곽의 모든 각도가 [80, 100]도 이내인지 결정한다.
+
+                            bool isRectangle = true;
+
+                            Point[] pointArray = currentContour.ToArray();
+
+                            LineSegment2D[] edgeArray = PointCollection.PolyLine(pointArray, true);
+
+                            for (int i = 0; i < edgeArray.Length; i++)
+                            {
+                                double angle = Math.Abs(edgeArray[(i + 1) % edgeArray.Length].GetExteriorAngleDegree(edgeArray[i]));
+
+                                if (angle < 80 || angle > 100)
+                                {
+                                    isRectangle = false;
+
+                                    break;
+                                }
                             }
-                            else if (currentContour.Total == 4) // 사각형인 경우
+
+                            #endregion 윤곽의 모든 각도가 [80, 100]도 이내인지 결정한다.
+
+                            if (isRectangle)
                             {
-                                #region 윤곽의 모든 각도가 [80, 100]도 이내인지 결정한다.
-
-                                bool isRectangle = true;
-
-                                Point[] pointArray = currentContour.ToArray();
-
-                                LineSegment2D[] edgeArray = PointCollection.PolyLine(pointArray, true);
-
-                                for (int i = 0; i < edgeArray.Length; i++)
-                                {
-                                    double angle = Math.Abs(edgeArray[(i + 1) % edgeArray.Length].GetExteriorAngleDegree(edgeArray[i]));
-
-                                    if (angle < 80 || angle > 100)
-                                    {
-                                        isRectangle = false;
-
-                                        break;
-                                    }
-                                }
-
-                                #endregion
-
-                                if (isRectangle)
-                                {
-                                    rectangleList.Add(currentContour.GetMinAreaRect());
-                                }
+                                rectangleList.Add(currentContour.GetMinAreaRect());
                             }
                         }
                     }
                 }
+            }
 
-                #endregion
+            #endregion 삼각형과 사각형을 검출한다.
 
-                Text = stringBuilder.ToString();
-                
-                
+            Text = stringBuilder.ToString();
 
-                #region 삼각형/사각형을 그린다.
+            #region 삼각형/사각형을 그린다.
 
-                Image<Bgr, Byte> triangleRectangleImage = sourceImage.CopyBlank();
+            Image<Bgr, Byte> triangleRectangleImage = sourceImage.CopyBlank();
 
-                foreach (Triangle2DF triangle in triangleList)
+            foreach (Triangle2DF triangle in triangleList)
+            {
+                triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
+            }
+            int count = 0;
+
+            foreach (MCvBox2D rectangle in rectangleList)
+            {
+                //void foo()
                 {
-                    triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
-                }
-                int count = 0;
-            
-                foreach (MCvBox2D rectangle in rectangleList)
-                 {
                     PointF[] vtx = rectangle.GetVertices();
                     Point[] pts = new Point[vtx.Length];
-                    for (int i = 0; i < vtx.Length; ++i)
-                        pts[i] = new Point((int)vtx[i].X, (int)vtx[i].Y);
+                    for (int i = 0; i < vtx.Length; ++i) pts[i] = new Point((int)vtx[i].X, (int)vtx[i].Y);
 
-                    sourceImage.DrawPolyline(pts, true, new Bgr(Color.Orange), 1);
-                    MCvBox2D smallrect = new MCvBox2D();
-                    PointF smallrectpoint = new PointF();
-                    smallrect.size.Width = rectangle.size.Width / 10;
-                    smallrect.size.Height = rectangle.size.Height / 10;
+                    List<FloatInt> fv = new List<FloatInt>();
 
-                    smallrectpoint.X = (rectangle.center.X - rectangle.size.Width / 2) - rectangle.size.Width / 10;
-                    smallrectpoint.Y = rectangle.center.Y - rectangle.size.Height / 2;
-                    
-                    if (count < 1)
+                    for (int i = 0; i < 4; ++i) fv.Add(new FloatInt { f = vtx[i].X, i = i });
+                    fv.Sort();
+
+                    PointF[,] vetx = new PointF[2, 2];
+                    if (vtx[fv[0].i].Y < vtx[fv[1].i].Y)
                     {
-                        for (int i = 0; i < 11; i++)
-                        {
-                            for (int j = 0; j < 11; j++)
-                            {
-                                smallrectpoint.X += rectangle.size.Width / 10;
-                                smallrect.center = smallrectpoint;
-                                sourceImage.Draw(smallrect, new Bgr(Color.Black), 1);
+                        vetx[1, 0] = vtx[fv[0].i];
+                        vetx[1, 1] = vtx[fv[1].i];
+                    }
+                    else
+                    {
+                        vetx[1, 0] = vtx[fv[1].i];
+                        vetx[1, 1] = vtx[fv[0].i];
+                    }
+                    if (vtx[fv[2].i].Y < vtx[fv[3].i].Y)
+                    {
+                        vetx[0, 0] = vtx[fv[2].i];
+                        vetx[0, 1] = vtx[fv[3].i];
+                    }
+                    else
+                    {
+                        vetx[0, 0] = vtx[fv[3].i];
+                        vetx[0, 1] = vtx[fv[2].i];
+                    }
 
+
+
+                    float width = (float)Math.Sqrt(Math.Pow(vetx[1, 0].X - vetx[0, 0].X, 2) + Math.Pow(vetx[1, 0].Y - vetx[0, 0].Y, 2));
+                    float[,] trans = new float[2, 2];
+                    float rad = (float)Math.Atan2(vetx[1, 0].Y - vetx[0, 0].Y, vetx[1, 0].X - vetx[0, 0].X);
+                    trans[0, 0] = +(float)Math.Cos(rad);
+                    trans[1, 0] = -(float)Math.Sin(rad);
+                    trans[0, 1] = +(float)Math.Sin(rad);
+                    trans[1, 1] = +(float)Math.Cos(rad);
+
+                    for (int x = 0; x < 11; ++x)
+                    {
+                        for (int y = 0; y < 11; ++y)
+                        {
+                            PointF[] abstractPoint = new PointF[4]
+                            {
+                                new PointF(x / 11f, y / 11f),
+                                new PointF((x + 1) / 11f, y / 11f),
+                                new PointF((x + 1)/ 11f, (y + 1) / 11f),
+                                new PointF(x / 11f, (y + 1) / 11f)
+                            };
+
+                            Point[] drawpts = new Point[4];
+                            for (int i = 0; i < 4; ++i)
+                            {
+
+                                drawpts[i] = new Point(
+                                    (int)(vetx[0, 0].X + 
+                                    width * abstractPoint[i].X * trans[0, 0] +
+                                    width * abstractPoint[i].Y * trans[1, 0]
+                                    ),
+                                    (int)(vetx[0, 0].Y +
+                                    width * abstractPoint[i].X * trans[0, 1] +
+                                    width * abstractPoint[i].Y * trans[1, 1]
+                                    )
+                                );
                             }
-                            smallrectpoint.X -= rectangle.size.Width * 11 / 10;
-                            smallrectpoint.Y += rectangle.size.Height / 10;
+
+                            sourceImage.DrawPolyline(drawpts, true, new Bgr(Color.Red), 1);
+                            
                         }
                     }
-                    //sourceImage.Draw(rectangle, new Bgr(Color.Orange), 1);
-                    count++;
+
 
                 }
+
+                //MCvBox2D smallrect = new MCvBox2D();
+                //PointF smallrectpoint = new PointF();
+                //smallrect.size.Width = rectangle.size.Width / 10;
+                //smallrect.size.Height = rectangle.size.Height / 10;
+
+                //smallrectpoint.X = (rectangle.center.X - rectangle.size.Width / 2) - rectangle.size.Width / 10;
+                //smallrectpoint.Y = rectangle.center.Y - rectangle.size.Height / 2;
+
+                //if (count < 1)
+                //{
+                //    for (int i = 0; i < 11; i++)
+                //    {
+                //        for (int j = 0; j < 11; j++)
+                //        {
+                //            smallrectpoint.X += rectangle.size.Width / 10;
+                //            smallrect.center = smallrectpoint;
+                //            sourceImage.Draw(smallrect, new Bgr(Color.Black), 1);
+                //        }
+                //        smallrectpoint.X -= rectangle.size.Width * 11 / 10;
+                //        smallrectpoint.Y += rectangle.size.Height / 10;
+                //    }
+                //}
+                //sourceImage.Draw(rectangle, new Bgr(Color.Orange), 1);
+                count++;
+            }
 
             this.afterimagebox.Image = sourceImage;
 
-            #endregion
+            #endregion 삼각형/사각형을 그린다.
+
             #region 원을 그린다.
 
             Image<Bgr, Byte> circleImage = sourceImage.CopyBlank();
 
-                foreach (CircleF circle in circleArray[0])
-                {
-                    circleImage.Draw(circle, new Bgr(Color.Brown), 2);
-                }
+            foreach (CircleF circle in circleArray[0])
+            {
+                circleImage.Draw(circle, new Bgr(Color.Brown), 2);
+            }
 
-                #endregion
+            #endregion 원을 그린다.
+
             #region 선을 그린다.
 
-                Image<Bgr, Byte> lineImage = sourceImage.CopyBlank();
+            Image<Bgr, Byte> lineImage = sourceImage.CopyBlank();
 
-                foreach (LineSegment2D line in lineArray[0])
-                {
-                    lineImage.Draw(line, new Bgr(Color.Green), 2);
-                }
+            foreach (LineSegment2D line in lineArray[0])
+            {
+                lineImage.Draw(line, new Bgr(Color.Green), 2);
+            }
 
-                #endregion
-            
+            #endregion 선을 그린다.
         }
+
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            
             AIDelay = rnd.Next(500, 5000);
             for (int _ = 0; _ < ((Diffcult.Jiwan == level && jiwancount % 5 == 0) ? 2 : 1); ++_)
             {
@@ -759,6 +816,28 @@ namespace omokproto1
             action_Check_Winner();
 
             timer1.Enabled = false;
+        }
+    }
+    internal class FloatInt : IComparable
+    {
+        public float f;
+        public int i;
+
+        public int CompareTo(Object Item)
+        {
+            FloatInt that = (FloatInt)Item;
+
+            if (this.f > that.f)
+                return -1;
+            if (this.f < that.f)
+                return 1;
+
+            if (this.f > that.f)
+                return -1;
+            if (this.f < that.f)
+                return 1;
+
+            return 0;
         }
     }
 }
