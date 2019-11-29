@@ -33,6 +33,9 @@ namespace omokproto1
 
     public partial class omokbot : Form
     {
+        
+
+
         private VideoCapture beforecap;
         private Mat srcb = new Mat();
 
@@ -51,6 +54,7 @@ namespace omokproto1
         private int AIDelay = 2000;
         private Rectangle BoardSize;
         private BlockType[,] BoardGrid = new BlockType[BoardWidth, BoardWidth];
+        BlockType[,] general_grid = new BlockType[BoardWidth, BoardWidth];
         private Diffcult level;
         private Graphics g; 
          
@@ -110,9 +114,9 @@ namespace omokproto1
 
         private void omokbot_Load(object sender, EventArgs e)
         {
-            serialPort1.PortName = "COM9";
+            serialPort1.PortName = "COM11";
             serialPort1.BaudRate = 115200;
-            //serialPort1.Open();
+            serialPort1.Open();
             serialPort1.DataReceived += SerialPort1_DataReceived;
             DetectShape();
         }
@@ -169,6 +173,7 @@ namespace omokproto1
                 Game_Run = false;
                 start_btn.Text = "start";
                 BoardGrid = new BlockType[BoardWidth, BoardWidth];
+                general_grid = new BlockType[BoardWidth, BoardWidth];
                 omokpan.Refresh();
             }
             else
@@ -441,8 +446,8 @@ namespace omokproto1
         {
             StringBuilder stringBuilder = new StringBuilder("성능 : ");
 
-            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p10.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
-            Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p10.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
+            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p14.jpg").Resize(600, 800, INTER.CV_INTER_LINEAR, true).Rotate(180,new Bgr());
+            Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p14.jpg").Resize(600, 800, INTER.CV_INTER_LINEAR, true).Rotate(180, new Bgr()); ;
             Image<Gray, Byte> grayscaleImage = sourceImage.Convert<Gray, Byte>().PyrDown().PyrUp();
 
             this.originalImageBox.Image = oriimage;
@@ -666,13 +671,13 @@ namespace omokproto1
                                 for (int j = 0; j < (drawpts[2].Y - drawpts[0].Y); ++j)
                                 {
 
-                                    if (redp > 15)
+                                    if (general_grid[x, y] == BlockType.Empty && redp > 10)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2] = 255;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 100;
                                     }
-                                    if (bluep > 15)
+                                    if (general_grid[x, y] == BlockType.Empty && bluep > 10)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 255;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
@@ -681,8 +686,10 @@ namespace omokproto1
                                     
                                 }
                             }
+                            if (general_grid[x, y] == BlockType.Empty && redp > 15) general_grid[x, y] = BlockType.WhiteStone;
+                            if (general_grid[x, y] == BlockType.Empty && bluep > 15) general_grid[x, y] = BlockType.BlackStone;
 
-
+                            
 
 
                         }
@@ -845,9 +852,9 @@ namespace omokproto1
                 }
 
                 Ai_lastPlace = best_pos;
-                //serialPort1.Write(best_pos.X.ToString());
-                //Thread.Sleep(10);
-                //serialPort1.Write(best_pos.Y.ToString());
+                serialPort1.Write(best_pos.X.ToString());
+                Thread.Sleep(10);
+                serialPort1.Write(best_pos.Y.ToString());
                 action_Place_stone(Ai_stone, best_pos.X, best_pos.Y);
             }
             Game_Turn = User_stone;
