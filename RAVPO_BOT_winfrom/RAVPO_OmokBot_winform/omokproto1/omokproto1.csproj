@@ -36,14 +36,32 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Emgu.CV">
-      <HintPath>..\..\..\..\..\..\Downloads\TestProject\Emgu.CV.dll</HintPath>
+    <Reference Include="Emgu.CV, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDK.EmguCV.x64.2.4.10\lib\net40\Emgu.CV.dll</HintPath>
     </Reference>
-    <Reference Include="Emgu.CV.UI">
-      <HintPath>..\..\..\..\..\..\Downloads\TestProject\Emgu.CV.UI.dll</HintPath>
+    <Reference Include="Emgu.CV.GPU, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDK.EmguCV.x64.2.4.10\lib\net40\Emgu.CV.GPU.dll</HintPath>
     </Reference>
-    <Reference Include="Emgu.Util">
-      <HintPath>..\..\..\..\..\..\Downloads\TestProject\Emgu.Util.dll</HintPath>
+    <Reference Include="Emgu.CV.ML, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDK.EmguCV.x64.2.4.10\lib\net40\Emgu.CV.ML.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.OCR, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDK.EmguCV.x64.2.4.10\lib\net40\Emgu.CV.OCR.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.OpenCL, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDK.EmguCV.x64.2.4.10\lib\net40\Emgu.CV.OpenCL.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.Stitching, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDK.EmguCV.x64.2.4.10\lib\net40\Emgu.CV.Stitching.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.UI, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDK.EmguCV.x64.2.4.10\lib\net40\Emgu.CV.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.VideoStab, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDK.EmguCV.x64.2.4.10\lib\net40\Emgu.CV.VideoStab.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.Util, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDK.EmguCV.x64.2.4.10\lib\net40\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCvSharp-AnyCPU.2.4.10.20170306\lib\net45\OpenCvSharp.dll</HintPath>
@@ -113,6 +131,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="cvextern.dll" />
     <Content Include="Resources\blackdol.png" />
     <Content Include="Resources\dols.wav" />
     <Content Include="Resources\whitedol.png" />

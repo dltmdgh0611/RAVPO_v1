@@ -1,4 +1,5 @@
-﻿namespace omokproto1
+﻿using Emgu.CV.UI;
+namespace omokproto1
 {
     partial class omokbot
     {

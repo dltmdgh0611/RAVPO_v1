@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
+using Emgu.Util;
 using OpenCvSharp.CPlusPlus;
 using System;
 using System.Collections.Generic;
@@ -51,14 +52,14 @@ namespace omokproto1
         private Rectangle BoardSize;
         private BlockType[,] BoardGrid = new BlockType[BoardWidth, BoardWidth];
         private Diffcult level;
-        private Graphics g;
-
+        private Graphics g; 
+         
         private Image sprite_Blackstone;
         private Image sprite_Whitestone;
 
         private SoundPlayer sound_Placestone = new SoundPlayer(@"C:\Users\user\source\repos\RAVPO\RAVPO_BOT_winfrom\RAVPO_OmokBot_winform\omokproto1\Resources\dols.wav");
         private int fin_w;
-        private bool Game_Run = false;
+        private bool Game_Run = false; 
         private BlockType Game_Turn = BlockType.BlackStone;
 
         private BlockType Game_Winner = BlockType.Empty;
@@ -440,8 +441,8 @@ namespace omokproto1
         {
             StringBuilder stringBuilder = new StringBuilder("성능 : ");
 
-            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/pan6.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
-            Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/pan6.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
+            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p10.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
+            Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p10.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true);
             Image<Gray, Byte> grayscaleImage = sourceImage.Convert<Gray, Byte>().PyrDown().PyrUp();
 
             this.originalImageBox.Image = oriimage;
@@ -589,6 +590,7 @@ namespace omokproto1
                     float width = (float)Math.Sqrt(Math.Pow(vetx[1, 0].X - vetx[0, 0].X, 2) + Math.Pow(vetx[1, 0].Y - vetx[0, 0].Y, 2));
                     float[,] trans = new float[2, 2];
                     float rad = (float)Math.Atan2(vetx[1, 0].Y - vetx[0, 0].Y, vetx[1, 0].X - vetx[0, 0].X);
+                    Image<Bgr, Byte>[,] grids = new Image<Bgr, Byte>[11, 11];
                     trans[0, 0] = +(float)Math.Cos(rad);
                     trans[1, 0] = -(float)Math.Sin(rad);
                     trans[0, 1] = +(float)Math.Sin(rad);
@@ -600,12 +602,15 @@ namespace omokproto1
                         {
                             PointF[] abstractPoint = new PointF[4]
                             {
-                                new PointF(x / 11f, y / 11f),
-                                new PointF((x + 1) / 11f, y / 11f),
-                                new PointF((x + 1)/ 11f, (y + 1) / 11f),
-                                new PointF(x / 11f, (y + 1) / 11f)
+                                new PointF((x - 0.5f) / 10, (y - 0.5f) / 10),
+                                new PointF((x + 0.5f) / 10, (y - 0.5f) / 10),
+                                new PointF((x + 0.5f) / 10, (y + 0.5f) / 10),
+                                new PointF((x - 0.5f) / 10, (y + 0.5f) / 10)
                             };
 
+
+                            
+                            
                             Point[] drawpts = new Point[4];
                             for (int i = 0; i < 4; ++i)
                             {
@@ -622,37 +627,71 @@ namespace omokproto1
                                 );
                             }
 
+
+
                             sourceImage.DrawPolyline(drawpts, true, new Bgr(Color.Red), 1);
-                            
+                            int redsum=0, greensum=0, bluesum=0;
+                            int redp=0, bluep=0;
+                            int pixelvalue=0;
+                            for (int i = 0; i < (drawpts[1].X - drawpts[0].X); ++i)
+                            {
+                                for (int j = 0; j < (drawpts[2].Y - drawpts[0].Y); ++j)
+                                {
+
+                                     int sat =  ( oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0]+
+                                                oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1]+
+                                                oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2])/3;
+
+
+                                    if (sat < 200 && sat > 50) 
+                                    {
+                                        bluesum += oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0];
+                                        greensum += oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1];
+                                        redsum += oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2];
+                                        pixelvalue++;
+                                    }
+                                    //oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j,1] = 255; 
+                                    
+                                }
+                            }
+                            redsum = redsum / pixelvalue;
+                            bluesum = bluesum / pixelvalue;
+                            greensum = greensum / pixelvalue;
+
+                            redp = redsum - ((bluesum + greensum) / 2);
+                            bluep = bluesum - ((redsum + greensum) / 2);
+
+                            for (int i = 0; i < (drawpts[1].X - drawpts[0].X); ++i)
+                            {
+                                for (int j = 0; j < (drawpts[2].Y - drawpts[0].Y); ++j)
+                                {
+
+                                    if (redp > 15)
+                                    {
+                                        sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2] = 255;
+                                        sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
+                                        sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 100;
+                                    }
+                                    if (bluep > 15)
+                                    {
+                                        sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 255;
+                                        sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
+                                        sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2] = 100;
+                                    }
+                                    
+                                }
+                            }
+
+
+
+
                         }
                     }
 
 
                 }
 
-                //MCvBox2D smallrect = new MCvBox2D();
-                //PointF smallrectpoint = new PointF();
-                //smallrect.size.Width = rectangle.size.Width / 10;
-                //smallrect.size.Height = rectangle.size.Height / 10;
-
-                //smallrectpoint.X = (rectangle.center.X - rectangle.size.Width / 2) - rectangle.size.Width / 10;
-                //smallrectpoint.Y = rectangle.center.Y - rectangle.size.Height / 2;
-
-                //if (count < 1)
-                //{
-                //    for (int i = 0; i < 11; i++)
-                //    {
-                //        for (int j = 0; j < 11; j++)
-                //        {
-                //            smallrectpoint.X += rectangle.size.Width / 10;
-                //            smallrect.center = smallrectpoint;
-                //            sourceImage.Draw(smallrect, new Bgr(Color.Black), 1);
-                //        }
-                //        smallrectpoint.X -= rectangle.size.Width * 11 / 10;
-                //        smallrectpoint.Y += rectangle.size.Height / 10;
-                //    }
-                //}
-                //sourceImage.Draw(rectangle, new Bgr(Color.Orange), 1);
+             
                 count++;
             }
 
@@ -806,9 +845,9 @@ namespace omokproto1
                 }
 
                 Ai_lastPlace = best_pos;
-                serialPort1.Write(best_pos.X.ToString());
-                Thread.Sleep(10);
-                serialPort1.Write(best_pos.Y.ToString());
+                //serialPort1.Write(best_pos.X.ToString());
+                //Thread.Sleep(10);
+                //serialPort1.Write(best_pos.Y.ToString());
                 action_Place_stone(Ai_stone, best_pos.X, best_pos.Y);
             }
             Game_Turn = User_stone;
