@@ -41,7 +41,10 @@ namespace omokproto1
             this.cmb_first = new System.Windows.Forms.ComboBox();
             this.explainer_lb = new System.Windows.Forms.Label();
             this.gbx_omokbot = new System.Windows.Forms.GroupBox();
+            this.aitext = new System.Windows.Forms.Label();
+            this.aiface = new System.Windows.Forms.PictureBox();
             this.control = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.listView1 = new System.Windows.Forms.ListView();
             this.SerialSend_bt = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -50,19 +53,20 @@ namespace omokproto1
             this.X_tb = new System.Windows.Forms.TextBox();
             this.Gbx_processing = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.afterimagebox = new Emgu.CV.UI.ImageBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.originalImageBox = new Emgu.CV.UI.ImageBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.cvtimer = new System.Windows.Forms.Timer(this.components);
-            this.afterimagebox = new Emgu.CV.UI.ImageBox();
             this.groupBox1.SuspendLayout();
             this.gbx_omokbot.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.aiface)).BeginInit();
             this.control.SuspendLayout();
             this.Gbx_processing.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.afterimagebox)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.originalImageBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.afterimagebox)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -70,7 +74,7 @@ namespace omokproto1
             this.groupBox1.Controls.Add(this.jiwan_rb);
             this.groupBox1.Controls.Add(this.hard_rb);
             this.groupBox1.Controls.Add(this.normal_rb);
-            this.groupBox1.Location = new System.Drawing.Point(810, 225);
+            this.groupBox1.Location = new System.Drawing.Point(810, 388);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(282, 205);
             this.groupBox1.TabIndex = 1;
@@ -118,7 +122,7 @@ namespace omokproto1
             // 
             // start_btn
             // 
-            this.start_btn.Location = new System.Drawing.Point(883, 477);
+            this.start_btn.Location = new System.Drawing.Point(883, 640);
             this.start_btn.Name = "start_btn";
             this.start_btn.Size = new System.Drawing.Size(155, 50);
             this.start_btn.TabIndex = 2;
@@ -159,7 +163,7 @@ namespace omokproto1
             this.cmb_first.Items.AddRange(new object[] {
             "유저 선수",
             "AI 선수"});
-            this.cmb_first.Location = new System.Drawing.Point(883, 444);
+            this.cmb_first.Location = new System.Drawing.Point(883, 607);
             this.cmb_first.Name = "cmb_first";
             this.cmb_first.Size = new System.Drawing.Size(155, 27);
             this.cmb_first.TabIndex = 5;
@@ -167,7 +171,7 @@ namespace omokproto1
             // 
             // explainer_lb
             // 
-            this.explainer_lb.Location = new System.Drawing.Point(817, 652);
+            this.explainer_lb.Location = new System.Drawing.Point(817, 746);
             this.explainer_lb.Name = "explainer_lb";
             this.explainer_lb.Size = new System.Drawing.Size(275, 66);
             this.explainer_lb.TabIndex = 6;
@@ -176,6 +180,8 @@ namespace omokproto1
             // 
             // gbx_omokbot
             // 
+            this.gbx_omokbot.Controls.Add(this.aitext);
+            this.gbx_omokbot.Controls.Add(this.aiface);
             this.gbx_omokbot.Controls.Add(this.control);
             this.gbx_omokbot.Controls.Add(this.start_btn);
             this.gbx_omokbot.Controls.Add(this.win_lb);
@@ -190,8 +196,28 @@ namespace omokproto1
             this.gbx_omokbot.TabStop = false;
             this.gbx_omokbot.Text = "OMOKBOT";
             // 
+            // aitext
+            // 
+            this.aitext.AutoSize = true;
+            this.aitext.Location = new System.Drawing.Point(916, 317);
+            this.aitext.Name = "aitext";
+            this.aitext.Size = new System.Drawing.Size(81, 12);
+            this.aitext.TabIndex = 10;
+            this.aitext.Text = "덤벼라 애송이";
+            // 
+            // aiface
+            // 
+            this.aiface.Image = global::omokproto1.Properties.Resources.playerturn1;
+            this.aiface.Location = new System.Drawing.Point(817, 22);
+            this.aiface.Name = "aiface";
+            this.aiface.Size = new System.Drawing.Size(275, 266);
+            this.aiface.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.aiface.TabIndex = 9;
+            this.aiface.TabStop = false;
+            // 
             // control
             // 
+            this.control.Controls.Add(this.label3);
             this.control.Controls.Add(this.listView1);
             this.control.Controls.Add(this.SerialSend_bt);
             this.control.Controls.Add(this.label2);
@@ -204,6 +230,15 @@ namespace omokproto1
             this.control.TabIndex = 8;
             this.control.TabStop = false;
             this.control.Text = "수동 조작";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(331, 17);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(57, 12);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "serialport";
             // 
             // listView1
             // 
@@ -278,6 +313,18 @@ namespace omokproto1
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "processing";
             // 
+            // afterimagebox
+            // 
+            this.afterimagebox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.afterimagebox.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.afterimagebox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.afterimagebox.Location = new System.Drawing.Point(3, 17);
+            this.afterimagebox.Margin = new System.Windows.Forms.Padding(0);
+            this.afterimagebox.Name = "afterimagebox";
+            this.afterimagebox.Size = new System.Drawing.Size(757, 460);
+            this.afterimagebox.TabIndex = 5;
+            this.afterimagebox.TabStop = false;
+            // 
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -307,18 +354,6 @@ namespace omokproto1
             this.cvtimer.Interval = 30;
             this.cvtimer.Tick += new System.EventHandler(this.cvtimer_Tick);
             // 
-            // afterimagebox
-            // 
-            this.afterimagebox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.afterimagebox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.afterimagebox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.afterimagebox.Location = new System.Drawing.Point(3, 17);
-            this.afterimagebox.Margin = new System.Windows.Forms.Padding(0);
-            this.afterimagebox.Name = "afterimagebox";
-            this.afterimagebox.Size = new System.Drawing.Size(757, 460);
-            this.afterimagebox.TabIndex = 5;
-            this.afterimagebox.TabStop = false;
-            // 
             // omokbot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -332,13 +367,15 @@ namespace omokproto1
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.gbx_omokbot.ResumeLayout(false);
+            this.gbx_omokbot.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.aiface)).EndInit();
             this.control.ResumeLayout(false);
             this.control.PerformLayout();
             this.Gbx_processing.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.afterimagebox)).EndInit();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.originalImageBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.afterimagebox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -369,6 +406,9 @@ namespace omokproto1
         private System.Windows.Forms.Timer cvtimer;
         private Emgu.CV.UI.ImageBox originalImageBox;
         private Emgu.CV.UI.ImageBox afterimagebox;
+        private System.Windows.Forms.PictureBox aiface;
+        private System.Windows.Forms.Label aitext;
+        private System.Windows.Forms.Label label3;
     }
 }
 

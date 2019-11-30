@@ -24,7 +24,6 @@ void SERIALINPUT::SERIAL_INPUT(MOVING* MOVESTATUS) {
 			serial_count = 0;
 
 			MOVESTATUS->MOVING_XY(grid[serialX][serialY][x], grid[serialX][serialY][y]);
-			break;
 
 		default:
 			break;

@@ -132,8 +132,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="cvextern.dll" />
+    <None Include="Resources\ailose.PNG" />
+    <None Include="Resources\aiwin.PNG" />
     <Content Include="Resources\blackdol.png" />
     <Content Include="Resources\dols.wav" />
+    <None Include="Resources\learning.PNG" />
+    <None Include="Resources\playerturn.PNG" />
+    <None Include="Resources\playerturn1.PNG" />
     <Content Include="Resources\whitedol.png" />
     <None Include="Resources\omokpan.png" />
   </ItemGroup>

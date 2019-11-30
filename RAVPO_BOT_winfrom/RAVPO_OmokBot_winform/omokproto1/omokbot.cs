@@ -2,6 +2,7 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.Util;
+using OpenCvSharp;
 using OpenCvSharp.CPlusPlus;
 using System;
 using System.Collections.Generic;
@@ -33,10 +34,7 @@ namespace omokproto1
 
     public partial class omokbot : Form
     {
-        
-
-
-        private VideoCapture beforecap;
+        private VideoCapture beforecap = new VideoCapture(0);
         private Mat srcb = new Mat();
 
         private VideoCapture aftercap;
@@ -56,8 +54,8 @@ namespace omokproto1
         private BlockType[,] BoardGrid = new BlockType[BoardWidth, BoardWidth];
         BlockType[,] general_grid = new BlockType[BoardWidth, BoardWidth];
         private Diffcult level;
-        private Graphics g; 
-         
+        private Graphics g;
+
         private Image sprite_Blackstone;
         private Image sprite_Whitestone;
 
@@ -124,10 +122,18 @@ namespace omokproto1
         private void SerialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             this.Invoke(new Action(() => listView1.Items.Add(serialPort1.ReadLine())));
+            if (serialPort1.ReadLine() == "r")
+            {
+                beforecap.Read(srcb);
+                Cv2.ImWrite("p90.jpg", srcb);
+            }
+
         }
 
         private void difficult_changed(object _, EventArgs __)
         {
+            beforecap.Read(srcb);
+            Cv2.ImWrite("p90.jpg", srcb);
             if (normal_rb.Checked)
             {
                 level = Diffcult.Normal;
@@ -445,10 +451,10 @@ namespace omokproto1
         public void DetectShape()
         {
             StringBuilder stringBuilder = new StringBuilder("성능 : ");
-
-            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p14.jpg").Resize(600, 800, INTER.CV_INTER_LINEAR, true).Rotate(180,new Bgr());
+            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p14.jpg").Resize(600, 800, INTER.CV_INTER_LINEAR, true).Rotate(180, new Bgr());
             Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p14.jpg").Resize(600, 800, INTER.CV_INTER_LINEAR, true).Rotate(180, new Bgr()); ;
             Image<Gray, Byte> grayscaleImage = sourceImage.Convert<Gray, Byte>().PyrDown().PyrUp();
+
 
             this.originalImageBox.Image = oriimage;
 
@@ -613,9 +619,6 @@ namespace omokproto1
                                 new PointF((x - 0.5f) / 10, (y + 0.5f) / 10)
                             };
 
-
-                            
-                            
                             Point[] drawpts = new Point[4];
                             for (int i = 0; i < 4; ++i)
                             {
@@ -632,8 +635,6 @@ namespace omokproto1
                                 );
                             }
 
-
-
                             sourceImage.DrawPolyline(drawpts, true, new Bgr(Color.Red), 1);
                             int redsum=0, greensum=0, bluesum=0;
                             int redp=0, bluep=0;
@@ -644,8 +645,8 @@ namespace omokproto1
                                 {
 
                                      int sat =  ( oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0]+
-                                                oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1]+
-                                                oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2])/3;
+                                                  oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1]+
+                                                  oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2])/3;
 
 
                                     if (sat < 200 && sat > 50) 

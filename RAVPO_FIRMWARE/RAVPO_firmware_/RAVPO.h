@@ -12,6 +12,10 @@
 #define J2_ENABLE_PIN		56
 #define J2_MIN_PIN          14
 
+#define Z_STEP_PIN         46
+#define Z_DIR_PIN          48
+#define Z_ENABLE_PIN       62
+
 #define MOVING_SELECT_X		1
 #define MOVING_SELECT_Y		2
 
@@ -41,7 +45,11 @@ public :
 	bool RSF;
 	int distance_x, distance_y;
 	void RUNNING_STEPMOTOR(short MOTOR_ST);
+	void run_z();
+	void run_home();
 	void MOVING_XY(int xpos, int ypos);
+	bool stepXfin=true, stepYfin=true;
+	void draw(int value);
 private:
 	void JUDGEMENT_DIR(int xpos, int ypos);
 	bool X_PorM, Y_PorM;

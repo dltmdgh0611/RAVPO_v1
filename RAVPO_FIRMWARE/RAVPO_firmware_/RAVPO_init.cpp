@@ -30,5 +30,11 @@ void INITS::RAVPO_init(INITS initmod, int speed) {
 		pinMode(J2_ENABLE_PIN, OUTPUT);
 		digitalWrite(J2_ENABLE_PIN, 0);
 	}
+	if (initmod.roE) {
+		pinMode(Z_STEP_PIN, OUTPUT);
+		pinMode(Z_DIR_PIN, OUTPUT);
+		pinMode(Z_ENABLE_PIN, OUTPUT);
+		digitalWrite(Z_ENABLE_PIN, 0);
+	}
 }
 
