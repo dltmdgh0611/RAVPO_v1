@@ -44,6 +44,7 @@ namespace omokproto1
             this.aitext = new System.Windows.Forms.Label();
             this.aiface = new System.Windows.Forms.PictureBox();
             this.control = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.listView1 = new System.Windows.Forms.ListView();
             this.SerialSend_bt = new System.Windows.Forms.Button();
@@ -53,7 +54,7 @@ namespace omokproto1
             this.X_tb = new System.Windows.Forms.TextBox();
             this.Gbx_processing = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.afterimagebox = new Emgu.CV.UI.ImageBox();
+            this.cap_btn = new Emgu.CV.UI.ImageBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.originalImageBox = new Emgu.CV.UI.ImageBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
@@ -64,7 +65,7 @@ namespace omokproto1
             this.control.SuspendLayout();
             this.Gbx_processing.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.afterimagebox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cap_btn)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.originalImageBox)).BeginInit();
             this.SuspendLayout();
@@ -217,6 +218,7 @@ namespace omokproto1
             // 
             // control
             // 
+            this.control.Controls.Add(this.button1);
             this.control.Controls.Add(this.label3);
             this.control.Controls.Add(this.listView1);
             this.control.Controls.Add(this.SerialSend_bt);
@@ -230,6 +232,16 @@ namespace omokproto1
             this.control.TabIndex = 8;
             this.control.TabStop = false;
             this.control.Text = "수동 조작";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(198, 52);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(106, 90);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "capture";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label3
             // 
@@ -305,7 +317,7 @@ namespace omokproto1
             // groupBox3
             // 
             this.groupBox3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.groupBox3.Controls.Add(this.afterimagebox);
+            this.groupBox3.Controls.Add(this.cap_btn);
             this.groupBox3.Location = new System.Drawing.Point(6, 506);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(763, 480);
@@ -313,17 +325,17 @@ namespace omokproto1
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "processing";
             // 
-            // afterimagebox
+            // cap_btn
             // 
-            this.afterimagebox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.afterimagebox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.afterimagebox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.afterimagebox.Location = new System.Drawing.Point(3, 17);
-            this.afterimagebox.Margin = new System.Windows.Forms.Padding(0);
-            this.afterimagebox.Name = "afterimagebox";
-            this.afterimagebox.Size = new System.Drawing.Size(757, 460);
-            this.afterimagebox.TabIndex = 5;
-            this.afterimagebox.TabStop = false;
+            this.cap_btn.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.cap_btn.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.cap_btn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cap_btn.Location = new System.Drawing.Point(3, 17);
+            this.cap_btn.Margin = new System.Windows.Forms.Padding(0);
+            this.cap_btn.Name = "cap_btn";
+            this.cap_btn.Size = new System.Drawing.Size(757, 460);
+            this.cap_btn.TabIndex = 5;
+            this.cap_btn.TabStop = false;
             // 
             // groupBox2
             // 
@@ -350,7 +362,6 @@ namespace omokproto1
             // 
             // cvtimer
             // 
-            this.cvtimer.Enabled = true;
             this.cvtimer.Interval = 30;
             this.cvtimer.Tick += new System.EventHandler(this.cvtimer_Tick);
             // 
@@ -373,7 +384,7 @@ namespace omokproto1
             this.control.PerformLayout();
             this.Gbx_processing.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.afterimagebox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cap_btn)).EndInit();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.originalImageBox)).EndInit();
             this.ResumeLayout(false);
@@ -405,10 +416,11 @@ namespace omokproto1
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Timer cvtimer;
         private Emgu.CV.UI.ImageBox originalImageBox;
-        private Emgu.CV.UI.ImageBox afterimagebox;
+        private Emgu.CV.UI.ImageBox cap_btn;
         private System.Windows.Forms.PictureBox aiface;
         private System.Windows.Forms.Label aitext;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button1;
     }
 }
 

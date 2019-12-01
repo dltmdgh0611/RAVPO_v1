@@ -36,7 +36,7 @@ namespace omokproto1
     {
         private VideoCapture beforecap = new VideoCapture(0);
         private Mat srcb = new Mat();
-
+        static bool toggle;
         private VideoCapture aftercap;
         private Mat srca = new Mat();
 
@@ -53,6 +53,7 @@ namespace omokproto1
         private Rectangle BoardSize;
         private BlockType[,] BoardGrid = new BlockType[BoardWidth, BoardWidth];
         BlockType[,] general_grid = new BlockType[BoardWidth, BoardWidth];
+        BlockType[,] prev_grid = new BlockType[BoardWidth, BoardWidth];
         private Diffcult level;
         private Graphics g;
 
@@ -112,7 +113,7 @@ namespace omokproto1
 
         private void omokbot_Load(object sender, EventArgs e)
         {
-            serialPort1.PortName = "COM11";
+            serialPort1.PortName = "COM3";
             serialPort1.BaudRate = 115200;
             serialPort1.Open();
             serialPort1.DataReceived += SerialPort1_DataReceived;
@@ -122,11 +123,6 @@ namespace omokproto1
         private void SerialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             this.Invoke(new Action(() => listView1.Items.Add(serialPort1.ReadLine())));
-            if (serialPort1.ReadLine() == "r")
-            {
-                beforecap.Read(srcb);
-                Cv2.ImWrite("p90.jpg", srcb);
-            }
 
         }
 
@@ -173,6 +169,7 @@ namespace omokproto1
 
         private void start_btn_Click(object sender, EventArgs e)
         {
+            serialPort1.Write("start");
             if (Game_Run)
             {
                 explainer_lb.Text = "                                                         ";
@@ -180,6 +177,7 @@ namespace omokproto1
                 start_btn.Text = "start";
                 BoardGrid = new BlockType[BoardWidth, BoardWidth];
                 general_grid = new BlockType[BoardWidth, BoardWidth];
+                prev_grid = new BlockType[BoardWidth, BoardWidth];
                 omokpan.Refresh();
             }
             else
@@ -196,7 +194,7 @@ namespace omokproto1
                     Ai_stone = BlockType.WhiteStone;
                     User_stone = BlockType.BlackStone;
 
-                    action_Place_stone(User_stone, BoardWidth / 2, BoardWidth / 2);
+                    //action_Place_stone(User_stone, BoardWidth / 2, BoardWidth / 2);
                     Game_Turn = Ai_stone;
 
                     timer1.Interval = AIDelay;
@@ -207,7 +205,7 @@ namespace omokproto1
                     Ai_stone = BlockType.BlackStone;
                     User_stone = BlockType.WhiteStone;
 
-                    action_Place_stone(Ai_stone, BoardWidth / 2, BoardWidth / 2);
+                    //action_Place_stone(Ai_stone, BoardWidth / 2, BoardWidth / 2);
                     Game_Turn = User_stone;
                 }
             }
@@ -336,7 +334,23 @@ namespace omokproto1
 
         private void cvtimer_Tick(object sender, EventArgs e)
         {
-            //CV_CP();
+            
+            beforecap.Read(srcb);
+            Cv2.ImWrite("p90.jpg", srcb);
+            DetectShape();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            for(int x = 0; x < 11; x++)
+            {
+                for(int y = 0; y < 11; y++)
+                {
+                    prev_grid[x, y] = general_grid[x, y];
+                }
+            }
+            
+            cvtimer.Enabled = true;
         }
 
         private void Omokpan_Paint(object sender, PaintEventArgs e)
@@ -450,9 +464,10 @@ namespace omokproto1
 
         public void DetectShape()
         {
+            
             StringBuilder stringBuilder = new StringBuilder("성능 : ");
-            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p14.jpg").Resize(600, 800, INTER.CV_INTER_LINEAR, true).Rotate(180, new Bgr());
-            Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/Pictures/Camera Roll/p14.jpg").Resize(600, 800, INTER.CV_INTER_LINEAR, true).Rotate(180, new Bgr()); ;
+            Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/source/repos/RAVPO/RAVPO_BOT_winfrom/RAVPO_OmokBot_winform/omokproto1/bin/Debug/p90.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true).Rotate(180, new Bgr());
+            Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/source/repos/RAVPO/RAVPO_BOT_winfrom/RAVPO_OmokBot_winform/omokproto1/bin/Debug/p90.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true).Rotate(180, new Bgr()); ;
             Image<Gray, Byte> grayscaleImage = sourceImage.Convert<Gray, Byte>().PyrDown().PyrUp();
 
 
@@ -474,7 +489,7 @@ namespace omokproto1
             );
 
             #endregion 원을 검출한다.
-
+           
             ;
 
             #region 선을 검출한다.
@@ -504,9 +519,9 @@ namespace omokproto1
             {
                 for (Contour<Point> pointContour = cannyEdges.FindContours(CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE, RETR_TYPE.CV_RETR_LIST, storage); pointContour != null; pointContour = pointContour.HNext)
                 {
-                    Contour<Point> currentContour = pointContour.ApproxPoly(pointContour.Perimeter * 0.05, storage);
+                    Contour<Point> currentContour = pointContour.ApproxPoly(pointContour.Perimeter * 0.1, storage);
 
-                    if (currentContour.Area > 250)
+                    if (currentContour.Area > 1000)
                     {
                         if (currentContour.Total == 3) // 삼각형인 경우
                         {
@@ -649,13 +664,12 @@ namespace omokproto1
                                                   oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2])/3;
 
 
-                                    if (sat < 200 && sat > 50) 
-                                    {
+
                                         bluesum += oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0];
                                         greensum += oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1];
                                         redsum += oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2];
                                         pixelvalue++;
-                                    }
+                                    
                                     //oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j,1] = 255; 
                                     
                                 }
@@ -672,25 +686,33 @@ namespace omokproto1
                                 for (int j = 0; j < (drawpts[2].Y - drawpts[0].Y); ++j)
                                 {
 
-                                    if (general_grid[x, y] == BlockType.Empty && redp > 10)
+                                    if (redp > 15)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2] = 255;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 100;
+                                        
                                     }
-                                    if (general_grid[x, y] == BlockType.Empty && bluep > 10)
+                                    else if (general_grid[x,y]==BlockType.BlackStone||bluep > 14)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 255;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2] = 100;
+                                        general_grid[x, y] = BlockType.BlackStone;
                                     }
                                     
                                 }
                             }
-                            if (general_grid[x, y] == BlockType.Empty && redp > 15) general_grid[x, y] = BlockType.WhiteStone;
-                            if (general_grid[x, y] == BlockType.Empty && bluep > 15) general_grid[x, y] = BlockType.BlackStone;
+                            if (prev_grid[x, y] != general_grid[x, y])
+                            {
+                                action_Place_stone(BlockType.BlackStone,x,y);
+                                cvtimer.Enabled = false;
+                                timer1.Enabled = true;
+                                timer1.Interval = AIDelay;
+                            }
 
-                            
+
+
 
 
                         }
@@ -699,11 +721,11 @@ namespace omokproto1
 
                 }
 
-             
+
                 count++;
             }
 
-            this.afterimagebox.Image = sourceImage;
+            this.cap_btn.Image = sourceImage;
 
             #endregion 삼각형/사각형을 그린다.
 
