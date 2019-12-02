@@ -128,8 +128,7 @@ namespace omokproto1
 
         private void difficult_changed(object _, EventArgs __)
         {
-            beforecap.Read(srcb);
-            Cv2.ImWrite("p90.jpg", srcb);
+
             if (normal_rb.Checked)
             {
                 level = Diffcult.Normal;
@@ -169,7 +168,10 @@ namespace omokproto1
 
         private void start_btn_Click(object sender, EventArgs e)
         {
-            serialPort1.Write("start");
+            serialPort1.Write(20.ToString());
+            Thread.Sleep(10);
+            serialPort1.Write(20.ToString());
+
             if (Game_Run)
             {
                 explainer_lb.Text = "                                                         ";
@@ -189,25 +191,25 @@ namespace omokproto1
                 BoardGrid = new BlockType[BoardWidth, BoardWidth];
                 Game_Winner = BlockType.Empty;
 
-                if (cmb_first.Text == "유저 선수")
-                {
-                    Ai_stone = BlockType.WhiteStone;
-                    User_stone = BlockType.BlackStone;
+                //if (cmb_first.Text == "유저 선수")
+                //{
+                //    Ai_stone = BlockType.WhiteStone;
+                //    User_stone = BlockType.BlackStone;
 
-                    //action_Place_stone(User_stone, BoardWidth / 2, BoardWidth / 2);
-                    Game_Turn = Ai_stone;
+                //    //action_Place_stone(User_stone, BoardWidth / 2, BoardWidth / 2);
+                //    //Game_Turn = Ai_stone;
 
-                    timer1.Interval = AIDelay;
-                    timer1.Enabled = true;
-                }
-                else
-                {
-                    Ai_stone = BlockType.BlackStone;
-                    User_stone = BlockType.WhiteStone;
+                //    timer1.Interval = AIDelay;
+                //    timer1.Enabled = true;
+                //}
+                //else
+                //{
+                //    Ai_stone = BlockType.BlackStone;
+                //    User_stone = BlockType.WhiteStone;
 
-                    //action_Place_stone(Ai_stone, BoardWidth / 2, BoardWidth / 2);
-                    Game_Turn = User_stone;
-                }
+                //    //action_Place_stone(Ai_stone, BoardWidth / 2, BoardWidth / 2);
+                //    //Game_Turn = User_stone;
+                //}
             }
         }
 
@@ -351,6 +353,13 @@ namespace omokproto1
             }
             
             cvtimer.Enabled = true;
+        }
+
+        private void home_btn_Click(object sender, EventArgs e)
+        {
+            serialPort1.Write(19.ToString());
+            Thread.Sleep(10);
+            serialPort1.Write(19.ToString());
         }
 
         private void Omokpan_Paint(object sender, PaintEventArgs e)
@@ -653,7 +662,7 @@ namespace omokproto1
                             sourceImage.DrawPolyline(drawpts, true, new Bgr(Color.Red), 1);
                             int redsum=0, greensum=0, bluesum=0;
                             int redp=0, bluep=0;
-                            int pixelvalue=0;
+                            int pixelvalue=1;
                             for (int i = 0; i < (drawpts[1].X - drawpts[0].X); ++i)
                             {
                                 for (int j = 0; j < (drawpts[2].Y - drawpts[0].Y); ++j)
@@ -664,11 +673,13 @@ namespace omokproto1
                                                   oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2])/3;
 
 
-
+                                    if (sat < 200 && sat > 50)
+                                    {
                                         bluesum += oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0];
                                         greensum += oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1];
                                         redsum += oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2];
                                         pixelvalue++;
+                                    }
                                     
                                     //oriimage.Data[drawpts[0].Y + i, drawpts[0].X + j,1] = 255; 
                                     
@@ -678,22 +689,22 @@ namespace omokproto1
                             bluesum = bluesum / pixelvalue;
                             greensum = greensum / pixelvalue;
 
-                            redp = redsum - ((bluesum + greensum) / 2);
-                            bluep = bluesum - ((redsum + greensum) / 2);
+                            redp = redsum - ((bluesum + greensum)/2);
+                            bluep = bluesum - ((redsum + greensum)/2);
 
                             for (int i = 0; i < (drawpts[1].X - drawpts[0].X); ++i)
                             {
                                 for (int j = 0; j < (drawpts[2].Y - drawpts[0].Y); ++j)
                                 {
 
-                                    if (redp > 15)
+                                    if (general_grid[x, y] == BlockType.WhiteStone || redp > 15)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2] = 255;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 100;
                                         
                                     }
-                                    else if (general_grid[x,y]==BlockType.BlackStone||bluep > 14)
+                                    else if (general_grid[x,y]==BlockType.BlackStone||bluep > 17)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 255;
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
@@ -709,6 +720,8 @@ namespace omokproto1
                                 cvtimer.Enabled = false;
                                 timer1.Enabled = true;
                                 timer1.Interval = AIDelay;
+                                aiface.Image = System.Drawing.Image.FromFile("C:/Users/user/Pictures/Camera Roll/aiturn.PNG");
+                                aitext.Text = "딥러닝 중..";
                             }
 
 
@@ -879,6 +892,8 @@ namespace omokproto1
                 Thread.Sleep(10);
                 serialPort1.Write(best_pos.Y.ToString());
                 action_Place_stone(Ai_stone, best_pos.X, best_pos.Y);
+                aiface.Image = System.Drawing.Image.FromFile("C:/Users/user/Pictures/Camera Roll/playerturn.PNG");
+                aitext.Text = "어디 한번 두어 보시오.";
             }
             Game_Turn = User_stone;
 

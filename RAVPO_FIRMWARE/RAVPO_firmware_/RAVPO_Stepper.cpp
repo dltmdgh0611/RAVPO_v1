@@ -25,7 +25,7 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 						RSF = false;
 					}
 					stepXfin = true;
-					if (stepXfin && stepYfin) roE_start_trigger = true;
+					if (drawenable&&stepXfin && stepYfin) roE_start_trigger = true;
 				}
 				digitalWrite(J1_STEP_PIN, 1);
 				PWM_toggle_X = false;
@@ -53,7 +53,7 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 						RSF = false;
 					}
 					stepYfin = true;
-					if (stepXfin && stepYfin) roE_start_trigger = true;
+					if (drawenable&&stepXfin && stepYfin) roE_start_trigger = true;
 				}
 				digitalWrite(J2_STEP_PIN, 1);
 				PWM_toggle_Y = false;
@@ -91,8 +91,9 @@ void MOVING::run_z() {
 			if (PWM_count_Z >= 13000) {
 				roE_start_trigger = false;
 				PWM_count_Z = 0;
+				MOVING_XY(26000, 23500);
+				drawenable = false;
 			}
-			
 			PWM_toggle_Z = false;
 		}
 		else {
@@ -111,93 +112,29 @@ void MOVING::draw(int value) {
 		digitalWrite(J1_STEP_PIN, 1);
 		digitalWrite(J2_STEP_PIN, 1);
 	}
-	if (value > 4300 && value <= 4600) {
+	if (value > 4300 && value <= 4900) {
 		digitalWrite(J1_DIR_PIN, 1);
 		digitalWrite(J1_STEP_PIN, 1);
 	}
-	if (value > 4600 && value <= 5200) {
+	if (value > 4900 && value <= 5500) {
 		digitalWrite(J2_DIR_PIN, 1);
 		digitalWrite(J2_STEP_PIN, 1);
 	}
-	if (value > 5200 && value <= 5800) {
+	if (value > 5500 && value <= 6100) {
 		digitalWrite(J1_DIR_PIN, 0);
 		digitalWrite(J1_STEP_PIN, 1);
 	}
-	if (value > 5800 && value <= 6400) {
+	if (value > 6100 && value <= 6700) {
 		digitalWrite(J2_DIR_PIN, 0);
 		digitalWrite(J2_STEP_PIN, 1);
 	}
-	if (value > 6400 && value <= 6700) {
+	if (value > 6700 && value <= 7000) {
 		digitalWrite(J1_DIR_PIN, 1);
 		digitalWrite(J2_DIR_PIN, 1);
 		digitalWrite(J1_STEP_PIN, 1);
 		digitalWrite(J2_STEP_PIN, 1);
 	}
 }
-//void MOVING::run_home() {
-//	static bool PWM_toggle_X = true;
-//	static bool PWM_toggle_Y = true;
-//	static int PWM_count_X = 0;
-//	static int PWM_count_Y = 0;
-//
-//	switch (MOTOR_ST)
-//	{
-//	case MOVING_SELECT_X:
-//		//digitalREAD (1 switch on / 0 switch off) | PorM(1 not switch direction /0 switch direction)
-//		if (j1E_start_trigger && (digitalRead(J1_MIN_PIN) == 1 || X_PorM == 1)) {
-//			if (PWM_toggle_X) {
-//				PWM_count_X++;
-//				if (PWM_count_X >= abs(cur_x - distance_x)) {
-//					j1E_start_trigger = false;
-//					if (X_PorM) cur_x += PWM_count_X;
-//					else cur_x -= PWM_count_X;
-//					PWM_count_X = 0;
-//					if (RSF) {
-//						cur_x = 0;
-//						RSF = false;
-//					}
-//					stepXfin = true;
-//
-//				}
-//				digitalWrite(J1_STEP_PIN, 1);
-//				PWM_toggle_X = false;
-//			}
-//			else {
-//				digitalWrite(J1_STEP_PIN, 0);
-//				PWM_toggle_X = true;
-//			}
-//		}
-//		break;
-//
-//	case MOVING_SELECT_Y:
-//		if (j2E_start_trigger && (digitalRead(J2_MIN_PIN) || Y_PorM)) {
-//			if (PWM_toggle_Y) {
-//				PWM_count_Y++;
-//				if (PWM_count_Y >= abs(cur_y - distance_y)) {
-//
-//					j2E_start_trigger = false;
-//					if (Y_PorM) cur_y += PWM_count_Y;
-//					else cur_y -= PWM_count_Y;
-//					PWM_count_Y = 0;
-//					if (RSF) {
-//						cur_y = 0;
-//						RSF = false;
-//					}
-//					stepYfin = false;
-//				}
-//				digitalWrite(J2_STEP_PIN, 1);
-//				PWM_toggle_Y = false;
-//			}
-//			else {
-//				digitalWrite(J2_STEP_PIN, 0);
-//				PWM_toggle_Y = true;
-//			}
-//			break;
-//		}
-//	default:
-//		break;
-//	}
-//}
 
 
 void MOVING::MOVING_XY(int xpos, int ypos) {

@@ -44,6 +44,7 @@ namespace omokproto1
             this.aitext = new System.Windows.Forms.Label();
             this.aiface = new System.Windows.Forms.PictureBox();
             this.control = new System.Windows.Forms.GroupBox();
+            this.home_btn = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.listView1 = new System.Windows.Forms.ListView();
@@ -199,12 +200,16 @@ namespace omokproto1
             // 
             // aitext
             // 
-            this.aitext.AutoSize = true;
-            this.aitext.Location = new System.Drawing.Point(916, 317);
+            this.aitext.AllowDrop = true;
+            this.aitext.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.aitext.Location = new System.Drawing.Point(819, 313);
             this.aitext.Name = "aitext";
-            this.aitext.Size = new System.Drawing.Size(81, 12);
+            this.aitext.Size = new System.Drawing.Size(273, 43);
             this.aitext.TabIndex = 10;
             this.aitext.Text = "덤벼라 애송이";
+            this.aitext.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // aiface
             // 
@@ -218,6 +223,7 @@ namespace omokproto1
             // 
             // control
             // 
+            this.control.Controls.Add(this.home_btn);
             this.control.Controls.Add(this.button1);
             this.control.Controls.Add(this.label3);
             this.control.Controls.Add(this.listView1);
@@ -232,6 +238,16 @@ namespace omokproto1
             this.control.TabIndex = 8;
             this.control.TabStop = false;
             this.control.Text = "수동 조작";
+            // 
+            // home_btn
+            // 
+            this.home_btn.Location = new System.Drawing.Point(6, 108);
+            this.home_btn.Name = "home_btn";
+            this.home_btn.Size = new System.Drawing.Size(58, 65);
+            this.home_btn.TabIndex = 14;
+            this.home_btn.Text = "home";
+            this.home_btn.UseVisualStyleBackColor = true;
+            this.home_btn.Click += new System.EventHandler(this.home_btn_Click);
             // 
             // button1
             // 
@@ -265,7 +281,7 @@ namespace omokproto1
             // 
             this.SerialSend_bt.Location = new System.Drawing.Point(70, 108);
             this.SerialSend_bt.Name = "SerialSend_bt";
-            this.SerialSend_bt.Size = new System.Drawing.Size(75, 50);
+            this.SerialSend_bt.Size = new System.Drawing.Size(75, 65);
             this.SerialSend_bt.TabIndex = 11;
             this.SerialSend_bt.Text = "SerialSend";
             this.SerialSend_bt.UseVisualStyleBackColor = true;
@@ -378,7 +394,6 @@ namespace omokproto1
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.gbx_omokbot.ResumeLayout(false);
-            this.gbx_omokbot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aiface)).EndInit();
             this.control.ResumeLayout(false);
             this.control.PerformLayout();
@@ -421,6 +436,7 @@ namespace omokproto1
         private System.Windows.Forms.Label aitext;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button home_btn;
     }
 }
 

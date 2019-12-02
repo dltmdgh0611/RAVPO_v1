@@ -22,8 +22,19 @@ void SERIALINPUT::SERIAL_INPUT(MOVING* MOVESTATUS) {
 			Serial.setTimeout(5);
 			serialY = Serial.parseInt();
 			serial_count = 0;
-
-			MOVESTATUS->MOVING_XY(grid[serialX][serialY][x], grid[serialX][serialY][y]);
+			if (serialX == 20 && serialY == 20) {
+				MOVESTATUS->MOVING_XY(26000,23500);
+				MOVESTATUS->drawenable = false;
+			}
+			else if (serialX == 19 && serialY == 19)
+			{
+				MOVESTATUS->MOVING_XY(0, 0);
+				MOVESTATUS->drawenable = false;
+			}
+			else {
+				MOVESTATUS->MOVING_XY(grid[serialX][serialY][x], grid[serialX][serialY][y]);
+				MOVESTATUS->drawenable = true;
+			}
 
 		default:
 			break;

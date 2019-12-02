@@ -50,6 +50,7 @@ public :
 	void MOVING_XY(int xpos, int ypos);
 	bool stepXfin=true, stepYfin=true;
 	void draw(int value);
+	bool drawenable = false;
 private:
 	void JUDGEMENT_DIR(int xpos, int ypos);
 	bool X_PorM, Y_PorM;
