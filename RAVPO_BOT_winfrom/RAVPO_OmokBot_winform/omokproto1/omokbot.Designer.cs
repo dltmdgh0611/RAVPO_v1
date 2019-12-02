@@ -385,6 +385,7 @@ namespace omokproto1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.Gbx_processing);
             this.Controls.Add(this.gbx_omokbot);

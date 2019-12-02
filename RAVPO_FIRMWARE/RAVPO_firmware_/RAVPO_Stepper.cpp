@@ -5,28 +5,28 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 	static bool PWM_toggle_Y = true;
 	static int PWM_count_X = 0;
 	static int PWM_count_Y = 0;
-
+	static bool move_toggle = true;
 	switch (MOTOR_ST)
 	{
-	case MOVING_SELECT_X : 
-		//digitalREAD (1 switch on / 0 switch off) | PorM(1 not switch direction /0 switch direction)
-		if (j1E_start_trigger && (digitalRead(J1_MIN_PIN) == 1 || X_PorM == 1)) { 
+	case MOVING_SELECT_X:
+		if (j1E_start_trigger && (digitalRead(J1_MIN_PIN) == 1 || X_PorM == 1)) {
 			stepXfin = false;
 
 			if (PWM_toggle_X) {
 				PWM_count_X++;
 				if (PWM_count_X >= abs(cur_x - distance_x)) {
 					j1E_start_trigger = false;
-					if (X_PorM) cur_x+=PWM_count_X;
-					else cur_x-= PWM_count_X;
+					if (X_PorM) cur_x += PWM_count_X;
+					else cur_x -= PWM_count_X;
 					PWM_count_X = 0;
 					if (RSF) {
 						cur_x = 0;
 						RSF = false;
 					}
 					stepXfin = true;
-					if (drawenable&&stepXfin && stepYfin) roE_start_trigger = true;
+					if (drawenable && stepXfin && stepYfin) roE_start_trigger = true;
 				}
+
 				digitalWrite(J1_STEP_PIN, 1);
 				PWM_toggle_X = false;
 			}
@@ -36,14 +36,13 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 			}
 		}
 		break;
-	
 	case MOVING_SELECT_Y:
 		if (j2E_start_trigger && (digitalRead(J2_MIN_PIN) || Y_PorM)) {
 			stepYfin = false;
 			if (PWM_toggle_Y) {
 				PWM_count_Y++;
 				if (PWM_count_Y >= abs(cur_y - distance_y)) {
-					
+
 					j2E_start_trigger = false;
 					if (Y_PorM) cur_y += PWM_count_Y;
 					else cur_y -= PWM_count_Y;
@@ -53,7 +52,7 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 						RSF = false;
 					}
 					stepYfin = true;
-					if (drawenable&&stepXfin && stepYfin) roE_start_trigger = true;
+					if (drawenable && stepXfin && stepYfin) roE_start_trigger = true;
 				}
 				digitalWrite(J2_STEP_PIN, 1);
 				PWM_toggle_Y = false;
@@ -62,12 +61,14 @@ void MOVING::RUNNING_STEPMOTOR(short MOTOR_ST) {
 				digitalWrite(J2_STEP_PIN, 0);
 				PWM_toggle_Y = true;
 			}
-			break;
+			
 		}
+		break;
 	default:
 		break;
 	}
 }
+
 void MOVING::run_z() {
 	static bool PWM_toggle_Z = true;
 	static int PWM_count_Z = 0;

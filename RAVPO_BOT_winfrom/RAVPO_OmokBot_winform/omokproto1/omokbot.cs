@@ -35,49 +35,95 @@ namespace omokproto1
     public partial class omokbot : Form
     {
         private VideoCapture beforecap = new VideoCapture(0);
+
         private Mat srcb = new Mat();
+
         static bool toggle;
+
         private VideoCapture aftercap;
+
         private Mat srca = new Mat();
 
         private const int BoardWidth = 11; //보드의 각 줄
+
         private const int BoardMargin = 50; //보드 마진
+
         private const int BoardCircleSize = 10; // 격자점 크기
+
         private const int BoardStoneSize = 42;
+
         private Random rnd = new Random();
+
         private readonly int[,] BoardDirection = new int[4, 2] { { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 } };
+
         private int[,] Ai_point = new int[5, 4];
 
+
+
+
         private int jiwancount;
+
         private int AIDelay = 2000;
+
         private Rectangle BoardSize;
+
         private BlockType[,] BoardGrid = new BlockType[BoardWidth, BoardWidth];
+
         BlockType[,] general_grid = new BlockType[BoardWidth, BoardWidth];
+
         BlockType[,] prev_grid = new BlockType[BoardWidth, BoardWidth];
+
         private Diffcult level;
+
         private Graphics g;
 
         private Image sprite_Blackstone;
+
         private Image sprite_Whitestone;
 
+
+
+
         private SoundPlayer sound_Placestone = new SoundPlayer(@"C:\Users\user\source\repos\RAVPO\RAVPO_BOT_winfrom\RAVPO_OmokBot_winform\omokproto1\Resources\dols.wav");
+
         private int fin_w;
+
         private bool Game_Run = false; 
+
         private BlockType Game_Turn = BlockType.BlackStone;
 
+
+
+
         private BlockType Game_Winner = BlockType.Empty;
+
         private Point c;
+
         private HierarchyIndex h;
+
         private int fin_x = -10, fin_y = -10, finend_x = -10, finend_y = -10;
+
         private BlockType Ai_stone = BlockType.WhiteStone;
+
         private Point Ai_lastPlace = new Point(-1, -1);
+
         private BlockType User_stone = BlockType.BlackStone;
+
         private Point User_lastPlace = new Point(-1, -1);
 
+
+
+
         private Font Game_font = new Font("Gulim", 10, System.Drawing.FontStyle.Bold);
+
         private Pen wp = new Pen(Color.White, 6);
+
         private Pen bp = new Pen(Color.Black, 6);
+
         private Pen PS = new Pen(Color.Red, 6);
+
+
+
 
         public omokbot()
         {
@@ -322,7 +368,20 @@ namespace omokproto1
                 {
                     win_lb.Text = "Winner is Jiwan";
                 }
-                else win_lb.Text = "Winner is " + winner.ToString();
+                else
+                {
+                    if(winner == BlockType.BlackStone)
+                    {
+                        aitext.Text = "이것은 딥러닝 과정일 뿐이니 \n\r\n\r 자만하지 마라 인간";
+                        aiface.Image = System.Drawing.Image.FromFile("C:/Users/user/Pictures/Camera Roll/ailose.PNG");
+                    }
+                    else
+                    {
+                        aitext.Text = "역시 인간은 아직 멀었군.";
+                        aiface.Image = System.Drawing.Image.FromFile("C:/Users/user/Pictures/Camera Roll/aiwin.PNG");
+                    }
+                    win_lb.Text = "Winner is " + winner.ToString();
+                }
 
                 jiwancount = 0;
                 Game_Run = false;
@@ -336,7 +395,6 @@ namespace omokproto1
 
         private void cvtimer_Tick(object sender, EventArgs e)
         {
-            
             beforecap.Read(srcb);
             Cv2.ImWrite("p90.jpg", srcb);
             DetectShape();
@@ -623,13 +681,21 @@ namespace omokproto1
 
 
                     float width = (float)Math.Sqrt(Math.Pow(vetx[1, 0].X - vetx[0, 0].X, 2) + Math.Pow(vetx[1, 0].Y - vetx[0, 0].Y, 2));
+
                     float[,] trans = new float[2, 2];
+
                     float rad = (float)Math.Atan2(vetx[1, 0].Y - vetx[0, 0].Y, vetx[1, 0].X - vetx[0, 0].X);
+
                     Image<Bgr, Byte>[,] grids = new Image<Bgr, Byte>[11, 11];
+
                     trans[0, 0] = +(float)Math.Cos(rad);
+
                     trans[1, 0] = -(float)Math.Sin(rad);
+
                     trans[0, 1] = +(float)Math.Sin(rad);
+
                     trans[1, 1] = +(float)Math.Cos(rad);
+
 
                     for (int x = 0; x < 11; ++x)
                     {
@@ -660,9 +726,13 @@ namespace omokproto1
                             }
 
                             sourceImage.DrawPolyline(drawpts, true, new Bgr(Color.Red), 1);
+
                             int redsum=0, greensum=0, bluesum=0;
+
                             int redp=0, bluep=0;
+
                             int pixelvalue=1;
+
                             for (int i = 0; i < (drawpts[1].X - drawpts[0].X); ++i)
                             {
                                 for (int j = 0; j < (drawpts[2].Y - drawpts[0].Y); ++j)
@@ -686,10 +756,13 @@ namespace omokproto1
                                 }
                             }
                             redsum = redsum / pixelvalue;
+
                             bluesum = bluesum / pixelvalue;
+
                             greensum = greensum / pixelvalue;
 
                             redp = redsum - ((bluesum + greensum)/2);
+
                             bluep = bluesum - ((redsum + greensum)/2);
 
                             for (int i = 0; i < (drawpts[1].X - drawpts[0].X); ++i)
@@ -700,15 +773,20 @@ namespace omokproto1
                                     if (general_grid[x, y] == BlockType.WhiteStone || redp > 15)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2] = 255;
+
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
+
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 100;
                                         
                                     }
-                                    else if (general_grid[x,y]==BlockType.BlackStone||bluep > 17)
+                                    else if (general_grid[x,y]==BlockType.BlackStone||bluep > 15)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 255;
+
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
+
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 2] = 100;
+
                                         general_grid[x, y] = BlockType.BlackStone;
                                     }
                                     
@@ -717,13 +795,17 @@ namespace omokproto1
                             if (prev_grid[x, y] != general_grid[x, y])
                             {
                                 action_Place_stone(BlockType.BlackStone,x,y);
+
                                 cvtimer.Enabled = false;
+
                                 timer1.Enabled = true;
+
                                 timer1.Interval = AIDelay;
+
                                 aiface.Image = System.Drawing.Image.FromFile("C:/Users/user/Pictures/Camera Roll/aiturn.PNG");
+
                                 aitext.Text = "딥러닝 중..";
                             }
-
 
 
 
@@ -811,14 +893,17 @@ namespace omokproto1
                                     {
                                         //돌 사이의 빈 공간
                                         int space = end - start + 1 - count;
-
-                                        double score = Ai_point[count, space];
-                                        pos = new Point(x, y);
-                                        for (int i = 0; i < 5; ++i)
+                                        action_Check_Winner();
+                                        if (Game_Winner == BlockType.Empty)
                                         {
-                                            user_benefit[pos.X, pos.Y] += score;
-                                            pos.X += BoardDirection[w, 0];
-                                            pos.Y += BoardDirection[w, 1];
+                                            double score = Ai_point[count, space];
+                                            pos = new Point(x, y);
+                                            for (int i = 0; i < 5; ++i)
+                                            {
+                                                user_benefit[pos.X, pos.Y] += score;
+                                                pos.X += BoardDirection[w, 0];
+                                                pos.Y += BoardDirection[w, 1];
+                                            }
                                         }
                                     }
                                 }
@@ -897,7 +982,7 @@ namespace omokproto1
             }
             Game_Turn = User_stone;
 
-            action_Check_Winner();
+            
 
             timer1.Enabled = false;
         }
@@ -905,6 +990,7 @@ namespace omokproto1
     internal class FloatInt : IComparable
     {
         public float f;
+
         public int i;
 
         public int CompareTo(Object Item)
