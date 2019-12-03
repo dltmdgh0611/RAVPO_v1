@@ -11,18 +11,22 @@ RAVPO는 Robot Arm Video Processing for Omok의 이니셜로, 영상처리를 �
 
 
 
-
+\n
 # Team RAVPO
 
 Inventor 설계 및 디자인 [최종욱]
 
 펌웨어개발 & 영상처리 [이승호]
 
-오목 봇 알고리즘 개발 [윤재상]
+
+(Thanks to)
+오목 봇 프로그램 도움 [윤재상]
+
+하드웨어 출력 도움 [김근훈]
 
 
 
-
+\n
 # Additional/
 
 자세한 설명과 기능들은 밑 주소의 블로그에서 확인해 주시기 바랍니다.
