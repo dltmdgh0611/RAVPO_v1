@@ -81,7 +81,7 @@ namespace omokproto1
 
         private Image sprite_Whitestone;
 
-
+        bool paintoggle = true;
 
 
         private SoundPlayer sound_Placestone = new SoundPlayer(@"C:\Users\user\source\repos\RAVPO\RAVPO_BOT_winfrom\RAVPO_OmokBot_winform\omokproto1\Resources\dols.wav");
@@ -163,6 +163,8 @@ namespace omokproto1
             serialPort1.BaudRate = 115200;
             serialPort1.Open();
             serialPort1.DataReceived += SerialPort1_DataReceived;
+            Mat p90s = Cv2.ImRead("C:/Users/user/Pictures/Camera Roll/p90s.jpg");
+            Cv2.ImWrite("p90.jpg", p90s);
             DetectShape();
         }
 
@@ -372,21 +374,25 @@ namespace omokproto1
                 {
                     if(winner == BlockType.BlackStone)
                     {
+                        win_lb.Text = "Winner is " + winner.ToString();
                         aitext.Text = "이것은 딥러닝 과정일 뿐이니 \n\r\n\r 자만하지 마라 인간";
                         aiface.Image = System.Drawing.Image.FromFile("C:/Users/user/Pictures/Camera Roll/ailose.PNG");
+                        timer1.Enabled = false;
                     }
                     else
                     {
+                        win_lb.Text = "Winner is " + winner.ToString();
                         aitext.Text = "역시 인간은 아직 멀었군.";
                         aiface.Image = System.Drawing.Image.FromFile("C:/Users/user/Pictures/Camera Roll/aiwin.PNG");
                     }
-                    win_lb.Text = "Winner is " + winner.ToString();
+                    
+                    
                 }
 
                 jiwancount = 0;
                 Game_Run = false;
                 start_btn.Text = "start";
-                this.omokpan.Paint += new System.Windows.Forms.PaintEventHandler(this.Omokpan_Paint);
+                
                 omokpan.Refresh();
                 return true;
             }
@@ -422,111 +428,112 @@ namespace omokproto1
 
         private void Omokpan_Paint(object sender, PaintEventArgs e)
         {
-            //가로선과 세로선 긋기
-            for (int i = 0; i < BoardWidth; i++)
-            {
-                //가로선
-                g.DrawLine(Pens.Black,
-                    BoardSize.X + BoardSize.Width * i / (BoardWidth - 1),
-                    BoardSize.Y,
-                    BoardSize.X + BoardSize.Width * i / (BoardWidth - 1),
-                    BoardSize.Y + BoardSize.Height
-                );
 
-                //세로선
-                g.DrawLine(Pens.Black,
-                    BoardSize.X,
-                    BoardSize.Y + BoardSize.Height * i / (BoardWidth - 1),
-                    BoardSize.X + BoardSize.Width,
-                    BoardSize.Y + BoardSize.Height * i / (BoardWidth - 1)
-                );
-            }
-
-            const int BoardCenter = (BoardWidth) / 2;
-
-            //화점 그리기
-            for (int x = 1; x < BoardWidth - 1; ++x)
-            {
-                for (int y = 1; y < BoardWidth - 1; ++y)
+                //가로선과 세로선 긋기
+                for (int i = 0; i < BoardWidth; i++)
                 {
-                    if ((x - BoardCenter) % 4 == 0 && (y - BoardCenter) % 4 == 0 && Math.Abs((y - BoardCenter)) == Math.Abs(x - BoardCenter))
+                    //가로선
+                    g.DrawLine(Pens.Black,
+                        BoardSize.X + BoardSize.Width * i / (BoardWidth - 1),
+                        BoardSize.Y,
+                        BoardSize.X + BoardSize.Width * i / (BoardWidth - 1),
+                        BoardSize.Y + BoardSize.Height
+                    );
+
+                    //세로선
+                    g.DrawLine(Pens.Black,
+                        BoardSize.X,
+                        BoardSize.Y + BoardSize.Height * i / (BoardWidth - 1),
+                        BoardSize.X + BoardSize.Width,
+                        BoardSize.Y + BoardSize.Height * i / (BoardWidth - 1)
+                    );
+                }
+
+                const int BoardCenter = (BoardWidth) / 2;
+
+                //화점 그리기
+                for (int x = 1; x < BoardWidth - 1; ++x)
+                {
+                    for (int y = 1; y < BoardWidth - 1; ++y)
                     {
-                        g.FillEllipse(Brushes.Black,
-                            BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardCircleSize / 2,
-                            BoardSize.Y + BoardSize.Height * y / (BoardWidth - 1) - BoardCircleSize / 2,
-                            BoardCircleSize,
-                            BoardCircleSize
-                        );
+                        if ((x - BoardCenter) % 4 == 0 && (y - BoardCenter) % 4 == 0 && Math.Abs((y - BoardCenter)) == Math.Abs(x - BoardCenter))
+                        {
+                            g.FillEllipse(Brushes.Black,
+                                BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardCircleSize / 2,
+                                BoardSize.Y + BoardSize.Height * y / (BoardWidth - 1) - BoardCircleSize / 2,
+                                BoardCircleSize,
+                                BoardCircleSize
+                            );
+                        }
                     }
                 }
-            }
 
-            //돌 그리기
-            for (int x = 0; x < BoardWidth; ++x)
-            {
-                for (int y = 0; y < BoardWidth; ++y)
+                //돌 그리기
+                for (int x = 0; x < BoardWidth; ++x)
                 {
-                    switch (BoardGrid[x, y])
+                    for (int y = 0; y < BoardWidth; ++y)
                     {
-                        case BlockType.BlackStone:
-                            g.DrawImage(sprite_Blackstone,
-                                BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardStoneSize / 2,
-                                BoardSize.Y + BoardSize.Height * y / (BoardWidth - 1) - BoardStoneSize / 2,
-                                BoardStoneSize,
-                                BoardStoneSize
-                            );
-                            break;
+                        switch (BoardGrid[x, y])
+                        {
+                            case BlockType.BlackStone:
+                                g.DrawImage(sprite_Blackstone,
+                                    BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardStoneSize / 2,
+                                    BoardSize.Y + BoardSize.Height * y / (BoardWidth - 1) - BoardStoneSize / 2,
+                                    BoardStoneSize,
+                                    BoardStoneSize
+                                );
+                                break;
 
-                        case BlockType.WhiteStone:
-                            g.DrawImage(sprite_Whitestone,
-                                BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardStoneSize / 2,
-                                BoardSize.Y + BoardSize.Height * y / (BoardWidth - 1) - BoardStoneSize / 2,
-                                BoardStoneSize,
-                                BoardStoneSize
-                            );
-                            break;
-                    }
-                    if (x == Ai_lastPlace.X && y == Ai_lastPlace.Y)
-                    {
-                        g.DrawString("AI", Game_font, Ai_stone == BlockType.WhiteStone ? Brushes.Black : Brushes.White, BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardStoneSize / 2, BoardSize.Y + BoardSize.Height * y / (BoardWidth - 1) - BoardStoneSize / 2);
+                            case BlockType.WhiteStone:
+                                g.DrawImage(sprite_Whitestone,
+                                    BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardStoneSize / 2,
+                                    BoardSize.Y + BoardSize.Height * y / (BoardWidth - 1) - BoardStoneSize / 2,
+                                    BoardStoneSize,
+                                    BoardStoneSize
+                                );
+                                break;
+                        }
+                        if (x == Ai_lastPlace.X && y == Ai_lastPlace.Y)
+                        {
+                            g.DrawString("AI", Game_font, Ai_stone == BlockType.WhiteStone ? Brushes.Black : Brushes.White, BoardSize.X + BoardSize.Width * x / (BoardWidth - 1) - BoardStoneSize / 2, BoardSize.Y + BoardSize.Height * y / (BoardWidth - 1) - BoardStoneSize / 2);
+                        }
                     }
                 }
-            }
 
-            if (Game_Winner == BlockType.WhiteStone) PS = bp;
-            else if (Game_Winner == BlockType.BlackStone) PS = wp;
-            switch (fin_w)
-            {
-                case 0:
-                    g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
-                                BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
-                                BoardSize.X + BoardSize.Width * (finend_x - 1) / (BoardWidth - 1),
-                                BoardSize.Y + BoardSize.Width * (finend_y) / (BoardWidth - 1));
-                    break;
+                if (Game_Winner == BlockType.WhiteStone) PS = bp;
+                else if (Game_Winner == BlockType.BlackStone) PS = wp;
+                switch (fin_w)
+                {
+                    case 0:
+                        g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
+                                    BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
+                                    BoardSize.X + BoardSize.Width * (finend_x - 1) / (BoardWidth - 1),
+                                    BoardSize.Y + BoardSize.Width * (finend_y) / (BoardWidth - 1));
+                        break;
 
-                case 1:
-                    g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
-                             BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
-                             BoardSize.X + BoardSize.Width * (finend_x - 1) / (BoardWidth - 1),
-                             BoardSize.Y + BoardSize.Width * (finend_y + 1) / (BoardWidth - 1));
-                    break;
+                    case 1:
+                        g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
+                                 BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
+                                 BoardSize.X + BoardSize.Width * (finend_x - 1) / (BoardWidth - 1),
+                                 BoardSize.Y + BoardSize.Width * (finend_y + 1) / (BoardWidth - 1));
+                        break;
 
-                case 2:
-                    g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
-                                BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
-                                BoardSize.X + BoardSize.Width * (finend_x) / (BoardWidth - 1),
-                                BoardSize.Y + BoardSize.Width * (finend_y + 1) / (BoardWidth - 1));
-                    break;
+                    case 2:
+                        g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
+                                    BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
+                                    BoardSize.X + BoardSize.Width * (finend_x) / (BoardWidth - 1),
+                                    BoardSize.Y + BoardSize.Width * (finend_y + 1) / (BoardWidth - 1));
+                        break;
 
-                case 3:
-                    g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
-                                BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
-                                BoardSize.X + BoardSize.Width * (finend_x + 1) / (BoardWidth - 1),
-                                BoardSize.Y + BoardSize.Width * (finend_y + 1) / (BoardWidth - 1));
-                    break;
+                    case 3:
+                        g.DrawLine(PS, BoardSize.X + BoardSize.Width * fin_x / (BoardWidth - 1),
+                                    BoardSize.Y + BoardSize.Width * fin_y / (BoardWidth - 1),
+                                    BoardSize.X + BoardSize.Width * (finend_x + 1) / (BoardWidth - 1),
+                                    BoardSize.Y + BoardSize.Width * (finend_y + 1) / (BoardWidth - 1));
+                        break;
 
-                default: break;
-            }
+                    default: break;
+                }
         }
 
         public void DetectShape()
@@ -779,7 +786,7 @@ namespace omokproto1
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 100;
                                         
                                     }
-                                    else if (general_grid[x,y]==BlockType.BlackStone||bluep > 15)
+                                    else if (general_grid[x,y]==BlockType.BlackStone||bluep > 13)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 255;
 
@@ -796,15 +803,24 @@ namespace omokproto1
                             {
                                 action_Place_stone(BlockType.BlackStone,x,y);
 
+                                action_Check_Winner();
+                                
+
                                 cvtimer.Enabled = false;
 
-                                timer1.Enabled = true;
+                                if (Game_Winner != BlockType.Empty) timer1.Enabled = false;
+                                else
+                                {
+                                    timer1.Enabled = true;
 
-                                timer1.Interval = AIDelay;
+                                    timer1.Interval = AIDelay;
 
-                                aiface.Image = System.Drawing.Image.FromFile("C:/Users/user/Pictures/Camera Roll/aiturn.PNG");
+                                    aiface.Image = System.Drawing.Image.FromFile("C:/Users/user/Pictures/Camera Roll/aiturn.PNG");
 
-                                aitext.Text = "딥러닝 중..";
+                                    aitext.Text = "딥러닝 중..";
+                                }
+
+
                             }
 
 
@@ -849,6 +865,7 @@ namespace omokproto1
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
+
             AIDelay = rnd.Next(500, 5000);
             for (int _ = 0; _ < ((Diffcult.Jiwan == level && jiwancount % 5 == 0) ? 2 : 1); ++_)
             {
@@ -893,7 +910,6 @@ namespace omokproto1
                                     {
                                         //돌 사이의 빈 공간
                                         int space = end - start + 1 - count;
-                                        action_Check_Winner();
                                         if (Game_Winner == BlockType.Empty)
                                         {
                                             double score = Ai_point[count, space];
