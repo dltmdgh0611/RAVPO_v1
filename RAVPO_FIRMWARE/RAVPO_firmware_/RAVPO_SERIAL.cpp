@@ -5,8 +5,8 @@
 void SERIALINPUT::gridinit() {
 	for (int w = 0; w < 11; w++) {
 		for (int h = 0; h < 11; h++) {
-			grid[w][h][x] = 7000 + w * 1500;
-			grid[w][h][y] = 19500 - h * 1500;
+			grid[w][h][x] = 7250 + w * 1450;
+			grid[w][h][y] = 19000 - h * 1450;
 		}
 	}
 }

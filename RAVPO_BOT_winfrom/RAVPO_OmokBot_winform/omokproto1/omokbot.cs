@@ -203,8 +203,8 @@ namespace omokproto1
                 Ai_point[3, 0] = 18; //x000x
                 Ai_point[3, 1] = 17; //00x0x
                 Ai_point[3, 2] = 16; //0x0x0
-                Ai_point[4, 0] = 73; //0000x
-                Ai_point[4, 1] = 72; //0x000
+                Ai_point[4, 0] = 74; //0000x
+                Ai_point[4, 1] = 73; //0x000
                 explainer_lb.Text = "어려움의 난이도로 고등 수준의 난이도 입니다.";
             }
             else if (jiwan_rb.Checked)
@@ -318,8 +318,8 @@ namespace omokproto1
                 {
                     for (int w = 0; w < 4; ++w)
                     {
-                        int end_x = x + BoardDirection[w, 0] * 5;
-                        int end_y = y + BoardDirection[w, 1] * 5;
+                        int end_x = x + BoardDirection[w, 0] * 4;
+                        int end_y = y + BoardDirection[w, 1] * 4;
                         if (0 <= end_x && end_x < BoardWidth && 0 <= end_y && end_y < BoardWidth)
                         {
                             //승패 결정
@@ -330,7 +330,7 @@ namespace omokproto1
                                 for (int i = 0; i < 5; ++i)
                                 {
                                     if (owner == BlockType.Empty && BoardGrid[pos.X, pos.Y] != BlockType.Empty)
-                                    {
+                                    {   
                                         owner = BoardGrid[x, y];
                                     }
                                     else if (owner != BlockType.Empty && BoardGrid[pos.X, pos.Y] != owner)
@@ -786,7 +786,7 @@ namespace omokproto1
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 100;
                                         
                                     }
-                                    else if (general_grid[x,y]==BlockType.BlackStone||bluep > 13)
+                                    else if (general_grid[x,y]==BlockType.BlackStone||bluep > 14)
                                     {
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 255;
 
@@ -878,8 +878,8 @@ namespace omokproto1
                     {
                         for (int w = 0; w < 4; ++w)
                         {
-                            int end_x = x + BoardDirection[w, 0] * 5;
-                            int end_y = y + BoardDirection[w, 1] * 5;
+                            int end_x = x + BoardDirection[w, 0] * 4;
+                            int end_y = y + BoardDirection[w, 1] * 4;
                             if (0 <= end_x && end_x < BoardWidth && 0 <= end_y && end_y < BoardWidth)
                             {
                                 //User Benefit 계산
