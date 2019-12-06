@@ -539,7 +539,7 @@ namespace omokproto1
         public void DetectShape()
         {
             
-            StringBuilder stringBuilder = new StringBuilder("성능 : ");
+            StringBuilder stringBuilder = new StringBuilder("오목을 학습하고 있는 비전");
             Image<Bgr, Byte> sourceImage = new Image<Bgr, byte>("C:/Users/user/source/repos/RAVPO/RAVPO_BOT_winfrom/RAVPO_OmokBot_winform/omokproto1/bin/Debug/p90.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true).Rotate(180, new Bgr());
             Image<Bgr, Byte> oriimage = new Image<Bgr, byte>("C:/Users/user/source/repos/RAVPO/RAVPO_BOT_winfrom/RAVPO_OmokBot_winform/omokproto1/bin/Debug/p90.jpg").Resize(400, 600, INTER.CV_INTER_LINEAR, true).Rotate(180, new Bgr()); ;
             Image<Gray, Byte> grayscaleImage = sourceImage.Convert<Gray, Byte>().PyrDown().PyrUp();
@@ -866,7 +866,7 @@ namespace omokproto1
         private void Timer1_Tick(object sender, EventArgs e)
         {
 
-            AIDelay = rnd.Next(500, 5000);
+            AIDelay = rnd.Next(1, 100);
             for (int _ = 0; _ < ((Diffcult.Jiwan == level && jiwancount % 5 == 0) ? 2 : 1); ++_)
             {
                 jiwancount++;

@@ -115,10 +115,10 @@ namespace omokproto1
             this.normal_rb.Font = new System.Drawing.Font("굴림", 14F);
             this.normal_rb.Location = new System.Drawing.Point(110, 30);
             this.normal_rb.Name = "normal_rb";
-            this.normal_rb.Size = new System.Drawing.Size(82, 23);
+            this.normal_rb.Size = new System.Drawing.Size(67, 23);
             this.normal_rb.TabIndex = 1;
             this.normal_rb.TabStop = true;
-            this.normal_rb.Text = "normal";
+            this.normal_rb.Text = "easy";
             this.normal_rb.UseVisualStyleBackColor = true;
             this.normal_rb.Click += new System.EventHandler(this.difficult_changed);
             // 
