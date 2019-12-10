@@ -159,12 +159,12 @@ namespace omokproto1
 
         private void omokbot_Load(object sender, EventArgs e)
         {
-            serialPort1.PortName = "COM3";
-            serialPort1.BaudRate = 115200;
-            serialPort1.Open();
-            serialPort1.DataReceived += SerialPort1_DataReceived;
-            Mat p90s = Cv2.ImRead("C:/Users/user/Pictures/Camera Roll/p90s.jpg");
-            Cv2.ImWrite("p90.jpg", p90s);
+            //serialPort1.PortName = "COM3";
+            //serialPort1.BaudRate = 115200;
+           // serialPort1.Open();
+            //serialPort1.DataReceived += SerialPort1_DataReceived;
+            //Mat p90s = Cv2.ImRead("C:/Users/user/Pictures/Camera Roll/p90s.jpg");
+            //Cv2.ImWrite("p90.jpg", p90s);
             DetectShape();
         }
 
@@ -401,8 +401,9 @@ namespace omokproto1
 
         private void cvtimer_Tick(object sender, EventArgs e)
         {
+            srcb = Cv2.ImRead("C:/Users/user/Pictures/Camera Roll/pan9.jpg");
             beforecap.Read(srcb);
-            Cv2.ImWrite("p90.jpg", srcb);
+            
             DetectShape();
         }
 
@@ -784,7 +785,8 @@ namespace omokproto1
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 1] = 100;
 
                                         sourceImage.Data[drawpts[0].Y + i, drawpts[0].X + j, 0] = 100;
-                                        
+
+                                        general_grid[x, y] = BlockType.WhiteStone;
                                     }
                                     else if (general_grid[x,y]==BlockType.BlackStone||bluep > 14)
                                     {
@@ -801,7 +803,9 @@ namespace omokproto1
                             }
                             if (prev_grid[x, y] != general_grid[x, y])
                             {
-                                action_Place_stone(BlockType.BlackStone,x,y);
+                                if(general_grid[x,y] == BlockType.BlackStone) action_Place_stone(BlockType.BlackStone, x, y);
+                                else action_Place_stone(BlockType.WhiteStone, x, y);
+
 
                                 action_Check_Winner();
                                 
