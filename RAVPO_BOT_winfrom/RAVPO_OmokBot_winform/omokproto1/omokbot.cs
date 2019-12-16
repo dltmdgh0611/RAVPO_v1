@@ -159,12 +159,12 @@ namespace omokproto1
 
         private void omokbot_Load(object sender, EventArgs e)
         {
-            //serialPort1.PortName = "COM3";
-            //serialPort1.BaudRate = 115200;
-           // serialPort1.Open();
-            //serialPort1.DataReceived += SerialPort1_DataReceived;
-            //Mat p90s = Cv2.ImRead("C:/Users/user/Pictures/Camera Roll/p90s.jpg");
-            //Cv2.ImWrite("p90.jpg", p90s);
+            serialPort1.PortName = "COM3";
+            serialPort1.BaudRate = 115200;
+            serialPort1.Open();
+            serialPort1.DataReceived += SerialPort1_DataReceived;
+            Mat p90s = Cv2.ImRead("C:/Users/user/Pictures/Camera Roll/p90s.jpg");
+            Cv2.ImWrite("p90.jpg", p90s);
             DetectShape();
         }
 
@@ -403,7 +403,7 @@ namespace omokproto1
         {
             srcb = Cv2.ImRead("C:/Users/user/Pictures/Camera Roll/pan9.jpg");
             beforecap.Read(srcb);
-            
+            Cv2.ImWrite("p90.jpg", srcb);
             DetectShape();
         }
 

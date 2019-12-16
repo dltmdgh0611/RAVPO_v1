@@ -90,12 +90,12 @@ void MOVING::run_z() {
 				digitalWrite(Z_STEP_PIN, 1);
 			}
 			if (PWM_count_Z >= 13000) {
-				roE_start_trigger = false;
+				roE_start_trigger = false; 
 				PWM_count_Z = 0;
 				MOVING_XY(26000, 23500);
 				drawenable = false;
 			}
-			PWM_toggle_Z = false;
+			PWM_toggle_Z = false; 
 		}
 		else {
 			digitalWrite(Z_STEP_PIN, 0);
